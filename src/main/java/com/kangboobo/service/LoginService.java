@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
+ * 登录服务类
+ *
  * Created by Administrator on 2019/7/23.
  */
 @Service

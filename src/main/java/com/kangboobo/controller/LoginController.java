@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
+ * 登录管理类
+ *
  * Created by Administrator on 2019/7/23.
  */
 @Controller
