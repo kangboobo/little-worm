@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 唯一标识号生成服务
  *
- * Created by gavin on 15/8/6.
+ * Created by kangboobo on 2019/8/20.
  */
 
 public class IdWorker {

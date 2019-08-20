@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 /**
- * Created by Administrator on 2019/8/20.
+ * Created by kangboobo on 2019/8/20.
  */
 @Service
 public class HttpCilentUtil {
