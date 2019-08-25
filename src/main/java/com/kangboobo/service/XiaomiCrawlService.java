@@ -3,18 +3,6 @@ package com.kangboobo.service;
 import com.alibaba.fastjson.JSONObject;
 import com.kangboobo.utils.ExcelUtils;
 import com.kangboobo.utils.HttpCilentUtil;
-import com.kangboobo.utils.IdWorker;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.assertj.core.util.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +24,8 @@ public class XiaomiCrawlService {
 
     private static final String URL = "https://game.xiaomi.com/api/getViewpointList";
 
-    @Autowired
-    private IdWorker idWorker;
+//    @Autowired
+//    private IdWorker idWorker;
 
     @Autowired
     private HttpCilentUtil httpCilentUtil;
@@ -63,7 +47,7 @@ public class XiaomiCrawlService {
             String responseContent = httpCilentUtil.doGet(url, gameCode);
 
             JSONObject json = JSONObject.parseObject(responseContent);
-            logger.info("序列号"+idWorker.nextId());
+//            logger.info("序列号"+idWorker.nextId());
 
         } catch (Exception e) {
             logger.error("", e);

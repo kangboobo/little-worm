@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
  *
  * Created by kangboobo on 2019/8/20.
  */
-
 public class IdWorker {
 
     protected static final Logger LOG = LoggerFactory.getLogger(IdWorker.class);
