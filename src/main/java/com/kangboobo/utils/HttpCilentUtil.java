@@ -19,7 +19,7 @@ import java.io.IOException;
 public class HttpCilentUtil {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public String doGet(String url, String gameCode) {
+    public String doGet(String url) {
         String responseContent = null;
         // 创建http客户端
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -39,7 +39,7 @@ public class HttpCilentUtil {
                 logger.info("http请求响应内容为:" + responseContent);
             }
         } catch (Exception e) {
-            logger.error("http请求失败 !!! gameCode={}, url={}", gameCode, url, e);
+            logger.error("http请求失败 !!! url={}", url, e);
         } finally {
             try {
                 // 释放资源

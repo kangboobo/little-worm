@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangboobo.mapper.CrawlCommentXiaomiMapper" >
+  <resultMap id="BaseResultMap" type="com.kangboobo.entity.CrawlCommentXiaomi" >
+    <id column="id" property="id" jdbcType="LONG" />
+    <result column="game_code" property="gameCode" jdbcType="INTEGER" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="viewpoint_id" property="viewpointId" jdbcType="VARCHAR" />
+    <result column="uuid" property="uuid" jdbcType="INTEGER" />
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+    <result column="like_count" property="likeCount" jdbcType="INTEGER" />
+    <result column="reply_count" property="replyCount" jdbcType="INTEGER" />
+    <result column="view_count" property="viewCount" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="DATE" />
+    <result column="update_time" property="updateTime" jdbcType="DATE" />
+    <result column="play_duration" property="playDuration" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="top_reply" property="topReply" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from crawl_comment_xiaomi
+    where id = #{id,jdbcType=LONG}
+  </delete>
+  <insert id="insert" parameterType="com.kangboobo.entity.CrawlCommentXiaomi" >
+    insert into crawl_comment_xiaomi (id, game_code, sort, viewpoint_id,
+      uuid, nickname, sex, 
+      score, like_count, reply_count, 
+      view_count, create_time, update_time, 
+      play_duration, content, top_reply
+      )
+    values (#{id,jdbcType=LONG}, #{gameCode,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER}, #{viewpointId,jdbcType=VARCHAR},
+      #{uuid,jdbcType=INTEGER}, #{nickname,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, 
+      #{score,jdbcType=INTEGER}, #{likeCount,jdbcType=INTEGER}, #{replyCount,jdbcType=INTEGER}, 
+      #{viewCount,jdbcType=INTEGER}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}, 
+      #{playDuration,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}, #{topReply,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.kangboobo.entity.CrawlCommentXiaomi" >
+    update crawl_comment_xiaomi
+    set game_code = #{gameCode,jdbcType=INTEGER},
+      sort = #{sort,jdbcType=INTEGER},
+      viewpoint_id = #{viewpointId,jdbcType=VARCHAR},
+      uuid = #{uuid,jdbcType=INTEGER},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      score = #{score,jdbcType=INTEGER},
+      like_count = #{likeCount,jdbcType=INTEGER},
+      reply_count = #{replyCount,jdbcType=INTEGER},
+      view_count = #{viewCount,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=DATE},
+      update_time = #{updateTime,jdbcType=DATE},
+      play_duration = #{playDuration,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR},
+      top_reply = #{topReply,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=LONG}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, game_code, sort, viewpoint_id, uuid, nickname, sex, score, like_count, reply_count,
+    view_count, create_time, update_time, play_duration, content, top_reply
+    from crawl_comment_xiaomi
+    where id = #{id,jdbcType=LONG}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, game_code, sort, viewpoint_id, uuid, nickname, sex, score, like_count, reply_count,
+    view_count, create_time, update_time, play_duration, content, top_reply
+    from crawl_comment_xiaomi
+  </select>
+
+  <!--获取存储的最新评论-->
+  <select id="getLastComment" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, game_code, sort, viewpoint_id, uuid, nickname, sex, score, like_count, reply_count,
+            view_count, create_time, update_time, play_duration, content, top_reply
+    from crawl_comment_xiaomi
+    where game_code = #{gameCode,jdbcType=INTEGER}
+    and sort = (
+      select max(sort)
+      from crawl_comment_xiaomi
+      where game_code = #{gameCode,jdbcType=INTEGER}
+    )
+  </select>
+</mapper>

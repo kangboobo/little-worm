@@ -1,6 +1,6 @@
 package com.kangboobo.service;
 
-import com.kangboobo.dao.SysUserMapper;
+import com.kangboobo.mapper.SysUserMapper;
 import com.kangboobo.entity.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

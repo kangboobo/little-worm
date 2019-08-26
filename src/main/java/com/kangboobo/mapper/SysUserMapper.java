@@ -1,4 +1,4 @@
-package com.kangboobo.dao;
+package com.kangboobo.mapper;
 
 import com.kangboobo.entity.SysUser;
 import org.springframework.stereotype.Repository;
