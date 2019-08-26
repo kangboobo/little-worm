@@ -3,6 +3,7 @@ package com.kangboobo.service;
 import com.alibaba.fastjson.JSONObject;
 import com.kangboobo.utils.ExcelUtils;
 import com.kangboobo.utils.HttpCilentUtil;
+import com.kangboobo.utils.IdWorker;
 import org.assertj.core.util.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +25,8 @@ public class XiaomiCrawlService {
 
     private static final String URL = "https://game.xiaomi.com/api/getViewpointList";
 
-//    @Autowired
-//    private IdWorker idWorker;
+    @Autowired
+    private IdWorker idWorker;
 
     @Autowired
     private HttpCilentUtil httpCilentUtil;
@@ -47,7 +48,7 @@ public class XiaomiCrawlService {
             String responseContent = httpCilentUtil.doGet(url, gameCode);
 
             JSONObject json = JSONObject.parseObject(responseContent);
-//            logger.info("序列号"+idWorker.nextId());
+            logger.info("序列号"+idWorker.nextId());
 
         } catch (Exception e) {
             logger.error("", e);

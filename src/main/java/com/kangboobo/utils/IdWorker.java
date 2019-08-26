@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 唯一标识号生成服务
+ * 唯一标识号生成组件
  *
  * Created by kangboobo on 2019/8/20.
  */
