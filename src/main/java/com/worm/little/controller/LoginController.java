@@ -29,10 +29,12 @@ public class LoginController {
         return "login";
     }
 
-    @RequestMapping(value = "/user/login", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Object login(@RequestParam(value = "userName", required = true) String userName,
                         @RequestParam(value = "password", required = true)String password,
-                        Map<String, Object> map) {
+                        Map<String, Object> map,
+                        Model model) {
 
         if(loginService.login(userName, password, map)){
             return "index";

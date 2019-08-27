@@ -37,8 +37,7 @@
                                     Log In...
                                 </div>
                             </div>
-                            <form action="index.html" th:action=@{/user/login}" method="post">
-                                <p style="color: red;" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
+                            <form>
                                 <div class="control">
                                     <input type="text" name="userName" class="form-control" placeholder="用户名"  />
                                 </div>

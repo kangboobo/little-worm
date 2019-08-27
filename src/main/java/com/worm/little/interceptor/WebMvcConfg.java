@@ -1,5 +1,6 @@
 package com.worm.little.interceptor;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -8,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * <p>
  * Created by Administrator on 2019/8/27.
  */
+@Configuration
 public class WebMvcConfg implements WebMvcConfigurer {
 
     public final static String SESSION_KEY = "user";
@@ -20,7 +22,7 @@ public class WebMvcConfg implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 添加拦截的请求，并排除几个不拦截的请求
-        registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/**")
-                .excludePathPatterns("/index.html", "/", "/user/login");
+        registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/*")
+                .excludePathPatterns("/login", "/");
     }
 }

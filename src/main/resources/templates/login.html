@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Flat Admin V.2 - Free Bootstrap Admin Templates</title>
+    <title>小虫虫爬虫系统</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Fonts -->
     <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' rel='stylesheet' type='text/css'>
@@ -37,12 +37,13 @@
                                     Log In...
                                 </div>
                             </div>
-                            <form action="index.html" th:action="@{/user/login}" method="post">
+                            <form id="login-form" th:action="@{/login}" method="post">
+                                <p style="color: red;" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
                                 <div class="control">
-                                    <input type="text" name="userName" class="form-control" placeholder="用户名"  />
+                                    <input type="text" name="userName" id="userName" class="form-control" placeholder="用户名"  />
                                 </div>
                                 <div class="control">
-                                    <input type="password" name="password" class="form-control"  placeholder="密码" />
+                                    <input type="password" name="password" id="password" class="form-control"  placeholder="密码" />
                                 </div>
                                 <div class="login-button text-center">
                                     <input type="submit" class="btn btn-primary" value="登录">
@@ -72,6 +73,37 @@
     <script type="text/javascript" src="dist/lib/js/ace/theme-github.js"></script>
     <!-- Javascript -->
     <script type="text/javascript" src="dist/js/app.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
 </body>
+
+<script type="text/javascript">
+    //输入表单验证
+    $('#login-form').bootstrapValidator({
+        message: 'This value is not valid',
+        excluded : [':disabled'],//忽略不验证的项[':disabled', ':hidden', ':not(:visible)']
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        submitHandler: function (validator, form, submitButton) {
+            // 表单提交成功时会调用此方法
+            // validator: 表单验证实例对象
+            // form  jq对象  指定表单对象
+            // submitButton  jq对象  指定提交按钮的对象
+        },
+        fields: {
+            userName: {
+                message: '用户名验证失败',
+                trigger:"change", //监听change动作
+                validators: {
+                    notEmpty: {
+                        message: '用户名不能为空'
+                    }
+                }
+            }
+        }
+    });
+</script>
 
 </html>

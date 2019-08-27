@@ -1,18 +1,20 @@
 package com.worm.little.entity;
 
 public class SysUser {
-    private Integer userId;
+    private Long id;
 
     private String userName;
 
     private String password;
 
-    public Integer getUserId() {
-        return userId;
+    private String status;
+
+    public Long getId() {
+        return id;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUserName() {
@@ -29,5 +31,13 @@ public class SysUser {
 
     public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

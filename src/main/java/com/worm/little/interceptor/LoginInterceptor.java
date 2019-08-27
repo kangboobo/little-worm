@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
  * <p>
  * Created by Administrator on 2019/8/27.
  */
-
 public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
@@ -22,7 +21,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             // 未登录，给出错误信息，
             request.setAttribute("msg", "无权限请先登录");
             // 获取request返回页面到登录页
-            request.getRequestDispatcher("/index.html").forward(request, response);
+            response.sendRedirect("/");
             return false;
         }
         return true;// 已登录用户放行

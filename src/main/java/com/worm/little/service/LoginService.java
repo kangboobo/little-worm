@@ -22,22 +22,30 @@ public class LoginService {
     @Autowired
     private SysUserMapper sysUserMapper;
 
+    /**
+     * 校验用户名密码
+     *
+     * @param userName  用户名
+     * @param password  密码
+     * @param map   响应信息
+     * @return  true:校验通过，false:校验失败
+     */
     public Boolean login(String userName, String password, Map<String, Object> map){
         Boolean loginFlag = false;
         try {
             SysUser sysUser = sysUserMapper.selectByUserName(userName);
             if (sysUser != null) {
                 if (!sysUser.getPassword().equals(password)) {
-                    map.put("msg", "用户密码错误，请重新输入");
+                    map.put("msg", "用户密码错误，请重新输入!");
                 } else {
                     loginFlag = true;
                 }
             } else {
-                map.put("msg", "用户不存在");
+                map.put("msg", "用户不存在!");
             }
         }catch (Exception e){
             logger.error("LoginService login error, userName={}, password={}", userName, password, e);
-            map.put("msg", "系统异常，登录失败");
+            map.put("msg", "系统异常，登录失败!");
             loginFlag = false;
         }
         return loginFlag;
