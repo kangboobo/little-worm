@@ -1,4 +1,4 @@
-package com.kangboobo.constans;
+package com.worm.little.constans;
 
 import java.lang.reflect.Constructor;
 

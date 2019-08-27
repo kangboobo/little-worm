@@ -1,4 +1,4 @@
-package com.kangboobo.entity;
+package com.worm.little.entity;
 
 public class SysUser {
     private Integer userId;

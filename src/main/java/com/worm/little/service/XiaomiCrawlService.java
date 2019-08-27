@@ -1,11 +1,11 @@
-package com.kangboobo.service;
+package com.worm.little.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.kangboobo.entity.CrawlCommentXiaomi;
-import com.kangboobo.mapper.CrawlCommentXiaomiMapper;
-import com.kangboobo.utils.HttpCilentUtil;
-import com.kangboobo.utils.IdWorker;
+import com.worm.little.entity.CrawlCommentXiaomi;
+import com.worm.little.mapper.CrawlCommentXiaomiMapper;
+import com.worm.little.utils.HttpCilentUtil;
+import com.worm.little.utils.IdWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

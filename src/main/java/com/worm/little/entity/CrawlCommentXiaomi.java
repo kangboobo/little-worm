@@ -1,4 +1,4 @@
-package com.kangboobo.entity;
+package com.worm.little.entity;
 
 import java.util.Date;
 

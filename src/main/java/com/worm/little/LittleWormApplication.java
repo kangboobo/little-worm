@@ -1,6 +1,6 @@
-package com.kangboobo;
+package com.worm.little;
 
-import com.kangboobo.utils.IdWorker;
+import com.worm.little.utils.IdWorker;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
  * Created by kangboobo on 2019/8/20.
  */
 @SpringBootApplication
-@MapperScan(basePackages = "com.kangboobo.dao")
+@MapperScan(basePackages = "com.worm.little.mapper")
 public class LittleWormApplication {
 
     public static void main(String[] args) {

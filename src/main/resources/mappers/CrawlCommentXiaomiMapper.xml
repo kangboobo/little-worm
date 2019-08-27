@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.kangboobo.mapper.CrawlCommentXiaomiMapper" >
-  <resultMap id="BaseResultMap" type="com.kangboobo.entity.CrawlCommentXiaomi" >
-    <id column="id" property="id" jdbcType="LONG" />
+<mapper namespace="com.worm.little.mapper.CrawlCommentXiaomiMapper" >
+  <resultMap id="BaseResultMap" type="com.worm.little.entity.CrawlCommentXiaomi" >
+    <id column="id" property="id" jdbcType="BIGINT" />
     <result column="game_code" property="gameCode" jdbcType="INTEGER" />
     <result column="sort" property="sort" jdbcType="INTEGER" />
     <result column="viewpoint_id" property="viewpointId" jdbcType="VARCHAR" />
@@ -21,23 +21,23 @@
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from crawl_comment_xiaomi
-    where id = #{id,jdbcType=LONG}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.kangboobo.entity.CrawlCommentXiaomi" >
+  <insert id="insert" parameterType="com.worm.little.entity.CrawlCommentXiaomi" >
     insert into crawl_comment_xiaomi (id, game_code, sort, viewpoint_id,
       uuid, nickname, sex, 
       score, like_count, reply_count, 
       view_count, create_time, update_time, 
       play_duration, content, top_reply
       )
-    values (#{id,jdbcType=LONG}, #{gameCode,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER}, #{viewpointId,jdbcType=VARCHAR},
+    values (#{id,jdbcType=BIGINT}, #{gameCode,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER}, #{viewpointId,jdbcType=VARCHAR},
       #{uuid,jdbcType=INTEGER}, #{nickname,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, 
       #{score,jdbcType=INTEGER}, #{likeCount,jdbcType=INTEGER}, #{replyCount,jdbcType=INTEGER}, 
       #{viewCount,jdbcType=INTEGER}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}, 
       #{playDuration,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}, #{topReply,jdbcType=LONGVARCHAR}
       )
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.kangboobo.entity.CrawlCommentXiaomi" >
+  <update id="updateByPrimaryKey" parameterType="com.worm.little.entity.CrawlCommentXiaomi" >
     update crawl_comment_xiaomi
     set game_code = #{gameCode,jdbcType=INTEGER},
       sort = #{sort,jdbcType=INTEGER},
@@ -54,13 +54,13 @@
       play_duration = #{playDuration,jdbcType=INTEGER},
       content = #{content,jdbcType=LONGVARCHAR},
       top_reply = #{topReply,jdbcType=LONGVARCHAR}
-    where id = #{id,jdbcType=LONG}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select id, game_code, sort, viewpoint_id, uuid, nickname, sex, score, like_count, reply_count,
     view_count, create_time, update_time, play_duration, content, top_reply
     from crawl_comment_xiaomi
-    where id = #{id,jdbcType=LONG}
+    where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select id, game_code, sort, viewpoint_id, uuid, nickname, sex, score, like_count, reply_count,

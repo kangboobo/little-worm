@@ -1,4 +1,4 @@
-package com.kangboobo;
+package com.worm.little;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

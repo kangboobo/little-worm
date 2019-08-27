@@ -1,6 +1,6 @@
-package com.kangboobo.mapper;
+package com.worm.little.mapper;
 
-import com.kangboobo.entity.CrawlCommentXiaomi;
+import com.worm.little.entity.CrawlCommentXiaomi;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
