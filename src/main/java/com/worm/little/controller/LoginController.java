@@ -8,12 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**
  * 登录管理类
- *
+ * <p>
  * Created by Administrator on 2019/7/23.
  */
 @Controller
@@ -29,16 +30,24 @@ public class LoginController {
         return "login";
     }
 
+    @RequestMapping("/index")
+    public String home(Model model, HttpServletResponse response) {
+        model.addAttribute("name", "simonsfan");
+        return "index";
+    }
+
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Object login(@RequestParam(value = "userName", required = true) String userName,
-                        @RequestParam(value = "password", required = true)String password,
+                        @RequestParam(value = "password", required = true) String password,
                         Map<String, Object> map,
-                        Model model) {
+                        HttpServletResponse response,
+                        HttpServletRequest request) {
 
-        if(loginService.login(userName, password, map)){
-            return "index";
-        }else{
+        if (loginService.login(userName, password, map)) {
+            request.getSession().setAttribute("userName", userName);//用户名存入该用户的session 中
+            return "redirect:/index";
+        } else {
             return "login";
         }
     }
