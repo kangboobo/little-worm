@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * 小米爬虫控制器
- *
+ * <p>
  * Created by Administrator on 2019/8/29.
  */
 @Controller
@@ -24,7 +24,7 @@ public class CrawlXiaomiController {
     private CrawlXiaomiService crawlXiaomiService;
 
     /**
-     * 登录
+     * 爬取小米游戏论坛评论数据
      *
      * @param gameCode 游戏id
      * @param map
@@ -32,11 +32,12 @@ public class CrawlXiaomiController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public Object login(@RequestParam(value = "gameCode", required = true) Integer gameCode,
-                        Map<String, Object> map,
-                        HttpServletResponse response,
-                        HttpServletRequest request) {
-        return crawlXiaomiService.gameCommentCrawl(gameCode);
+    @RequestMapping(value = "/crawl/xiaomi", method = RequestMethod.POST)
+    public Object gameCommentCrawl(@RequestParam(value = "gameCode", required = true) Integer gameCode,
+                                   Map<String, Object> map,
+                                   HttpServletResponse response,
+                                   HttpServletRequest request) {
+        Long userId = (Long) request.getSession().getAttribute("userId");// 从该用户的session中获取用户id
+        return crawlXiaomiService.gameCommentCrawl(userId, gameCode);
     }
 }

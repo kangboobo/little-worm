@@ -66,6 +66,7 @@ public class LoginController {
 
         if (loginService.login(userName, password, map)) {
             request.getSession().setAttribute("userName", userName);//用户名存入该用户的session中
+            request.getSession().setAttribute("userId", map.get("userId"));//用户id存入该用户的session中
             return "redirect:/index";
         } else {
             return "login";

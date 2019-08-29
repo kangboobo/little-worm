@@ -37,13 +37,13 @@ public class CrawlXiaomiService {
     @Autowired
     private CrawlCommentXiaomiMapper crawlCommentXiaomiMapper;
 
-    public Object gameCommentCrawl(Integer gameCode) {
+    public Object gameCommentCrawl(Long userId, Integer gameCode) {
         // 组织请求参数
         StringBuffer params = new StringBuffer();
         try {
             // 获取存储的最新评论
             Map<String, Object> param = new HashMap<>();
-            param.put("userId", "");
+            param.put("userId", userId);
             param.put("gameCode", gameCode);
             CrawlCommentXiaomi LastlCommentXiaomi = crawlCommentXiaomiMapper.getLastComment(param);
 
