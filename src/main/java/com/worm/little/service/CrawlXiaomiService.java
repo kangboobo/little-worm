@@ -12,12 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
+ * 小米爬虫服务
+ * <p>
  * Created by Administrator on 2019/8/20.
  */
 @Service
-public class XiaomiCrawlService {
+public class CrawlXiaomiService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -38,7 +42,10 @@ public class XiaomiCrawlService {
         StringBuffer params = new StringBuffer();
         try {
             // 获取存储的最新评论
-            CrawlCommentXiaomi LastlCommentXiaomi = crawlCommentXiaomiMapper.getLastComment(gameCode);
+            Map<String, Object> param = new HashMap<>();
+            param.put("userId", "");
+            param.put("gameCode", gameCode);
+            CrawlCommentXiaomi LastlCommentXiaomi = crawlCommentXiaomiMapper.getLastComment(param);
 
             // 循环爬取每页数据
             Integer totalPageNum = 1;
@@ -47,7 +54,7 @@ public class XiaomiCrawlService {
                 String pageResponseContent = httpCilentUtil.doGet(url);
                 JSONObject pageJson = JSONObject.parseObject(pageResponseContent);// 解析响应json
                 // 第一页时获取总评论数，并计算总页数
-                if(pageNum == 1) {
+                if (pageNum == 1) {
                     Integer totalRecordCnt = pageJson.getInteger("totalRecordCnt");// 总评论数
                     totalPageNum = (totalRecordCnt + PAGE_SIZE - 1) / PAGE_SIZE;// 计算页数
                 }
@@ -127,7 +134,7 @@ public class XiaomiCrawlService {
             params.append("&owner=1");
             String pageResponseContent = httpCilentUtil.doGet(params.toString());
             JSONObject pageJson = JSONObject.parseObject(pageResponseContent);
-            if(pageNum == 1) {
+            if (pageNum == 1) {
                 Integer totalRecordCnt = pageJson.getInteger("totalRecordCnt");// 评论条数
                 totalPageNum = (totalRecordCnt + PAGE_SIZE - 1) / PAGE_SIZE;// 计算页数
             }

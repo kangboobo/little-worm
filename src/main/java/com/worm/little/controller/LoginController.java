@@ -23,20 +23,40 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-
+    /**
+     * 跳转到登录页
+     * @param model
+     * @param response
+     * @return
+     */
     @RequestMapping("/")
     public String index(Model model, HttpServletResponse response) {
         model.addAttribute("name", "simonsfan");
         return "login";
     }
 
+    /**
+     * 跳转到首页
+     * @param model
+     * @param response
+     * @return
+     */
     @RequestMapping("/index")
     public String home(Model model, HttpServletResponse response) {
         model.addAttribute("name", "simonsfan");
         return "index";
     }
 
-
+    /**
+     * 登录
+     *
+     * @param userName
+     * @param password
+     * @param map
+     * @param response
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Object login(@RequestParam(value = "userName", required = true) String userName,
                         @RequestParam(value = "password", required = true) String password,
@@ -45,7 +65,7 @@ public class LoginController {
                         HttpServletRequest request) {
 
         if (loginService.login(userName, password, map)) {
-            request.getSession().setAttribute("userName", userName);//用户名存入该用户的session 中
+            request.getSession().setAttribute("userName", userName);//用户名存入该用户的session中
             return "redirect:/index";
         } else {
             return "login";

@@ -4,6 +4,7 @@ import com.worm.little.entity.CrawlCommentXiaomi;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface CrawlCommentXiaomiMapper {
@@ -20,8 +21,8 @@ public interface CrawlCommentXiaomiMapper {
     /**
      * 获取存储的最新评论
      *
-     * @param gameCode
+     * @param param
      * @return
      */
-    public CrawlCommentXiaomi getLastComment(Integer gameCode);
+    public CrawlCommentXiaomi getLastComment(Map param);
 }

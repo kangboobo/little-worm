@@ -5,7 +5,9 @@ import java.util.Date;
 public class CrawlCommentXiaomi {
     private Long id;
 
-    private Integer gameCode;
+    private Long userId;
+
+    private Long gameCode;
 
     private Integer sort;
 
@@ -43,11 +45,15 @@ public class CrawlCommentXiaomi {
         this.id = id;
     }
 
-    public Integer getGameCode() {
-        return gameCode;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setGameCode(Integer gameCode) {
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public void setGameCode(Long gameCode) {
         this.gameCode = gameCode;
     }
 
