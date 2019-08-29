@@ -84,4 +84,23 @@
       and user_id = #{userId,jdbcType=BIGINT}
     )
   </select>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into crawl_comment_xiaomi (
+        id, user_id, game_code, sort, viewpoint_id,
+        uuid, nickname, sex,
+        score, like_count, reply_count,
+        view_count, create_time, update_time,
+        play_duration, content, top_reply
+        ) values
+        <foreach collection="list" item="it" separator=",">
+            (
+            #{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{gameCode,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER}, #{viewpointId,jdbcType=VARCHAR},
+            #{uuid,jdbcType=INTEGER}, #{nickname,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},
+            #{score,jdbcType=INTEGER}, #{likeCount,jdbcType=INTEGER}, #{replyCount,jdbcType=INTEGER},
+            #{viewCount,jdbcType=INTEGER}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE},
+            #{playDuration,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}, #{topReply,jdbcType=LONGVARCHAR}
+            )
+        </foreach>
+    </insert>
 </mapper>

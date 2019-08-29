@@ -25,4 +25,11 @@ public interface CrawlCommentXiaomiMapper {
      * @return
      */
     public CrawlCommentXiaomi getLastComment(Map param);
+
+    /**
+     * 批量新增评论数据
+     *
+     * @param recordList
+     */
+    void batchInsert(List<CrawlCommentXiaomi> recordList);
 }
