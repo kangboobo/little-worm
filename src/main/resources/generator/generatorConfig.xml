@@ -6,7 +6,7 @@
 
 <generatorConfiguration>
     <!--指定特定数据库的jdbc驱动jar包的位置-->
-    <classPathEntry location="D:\tools\Repo\mysql\mysql-connector-java\5.1.42\mysql-connector-java-5.1.42.jar"/>
+    <classPathEntry location="C:\Users\kklovexx\.m2\repository\mysql\mysql-connector-java\8.0.16\mysql-connector-java-8.0.16.jar"/>
 
     <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
 
@@ -63,7 +63,7 @@
         </javaClientGenerator>
 
 
-        <table tableName="crawl_comment_xiaomi">
+        <table tableName="`user_crawl_record`">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 

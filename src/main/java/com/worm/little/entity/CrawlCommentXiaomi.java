@@ -53,6 +53,10 @@ public class CrawlCommentXiaomi {
         this.userId = userId;
     }
 
+    public Long getGameCode() {
+        return gameCode;
+    }
+
     public void setGameCode(Long gameCode) {
         this.gameCode = gameCode;
     }

@@ -1,15 +1,22 @@
 package com.worm.little.controller;
 
 
+import com.worm.little.entity.CrawlCommentXiaomi;
 import com.worm.little.service.CrawlXiaomiService;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,22 +26,57 @@ import java.util.Map;
  */
 @Controller
 public class CrawlXiaomiController {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private CrawlXiaomiService crawlXiaomiService;
 
     /**
-     * 爬取小米游戏论坛评论数据
+     * 查询小米评论数据
      *
      * @param gameCode 游戏id
-     * @param map
+     * @param model
      * @param response
      * @param request
      * @return
      */
-    @RequestMapping(value = "/crawl/xiaomi", method = RequestMethod.POST)
-    public Object gameCommentCrawl(@RequestParam(value = "gameCode", required = true) Integer gameCode,
-                                   Map<String, Object> map,
+    @RequestMapping(value = "/xiaomi_comment", method = RequestMethod.GET)
+    public Object getGameCommentList(@RequestParam(value = "game_code", required = false) String gameCode,
+                                     @RequestParam(value = "start_date", required = false) String startDate,
+                                     @RequestParam(value = "end_date", required = false) String endDate,
+                                     Model model,
+                                     HttpServletResponse response,
+                                     HttpServletRequest request) {
+        Long userId = (Long) request.getSession().getAttribute("userId");// 从该用户的session中获取用户id
+        Map<String,Object> param = new HashMap<>();
+        param.put("userId", userId);
+        if(StringUtils.isNotEmpty(gameCode)) {
+            param.put("gameCode", gameCode.trim());
+        }
+        if(StringUtils.isNotEmpty(startDate)) {
+            param.put("startDate", startDate);
+        }
+        if(StringUtils.isNotEmpty(endDate)) {
+            param.put("endDate", endDate);
+        }
+        List<CrawlCommentXiaomi> crawlComments = crawlXiaomiService.getGameCommentList(param);
+        //放在请求域中
+        model.addAttribute("crawl_comments", crawlComments);
+        return "xiaomi_comment";
+    }
+
+    /**
+     * 爬取小米游戏论坛评论数据
+     *
+     * @param gameCode 游戏id
+     * @param model
+     * @param response
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/xiaomi_crawl", method = RequestMethod.POST)
+    public Object gameCommentCrawl(@RequestParam(value = "gameCode", required = false) Integer gameCode,
+                                   Model model,
                                    HttpServletResponse response,
                                    HttpServletRequest request) {
         Long userId = (Long) request.getSession().getAttribute("userId");// 从该用户的session中获取用户id

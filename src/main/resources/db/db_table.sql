@@ -6,15 +6,30 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user` (
   `id` int(20) NOT NULL COMMENT '主键',
-  `user_name` varchar(100) NOT NULL COMMENT '用户名称',
+  `user_id` varchar(20) NOT NULL COMMENT '用户id',
+  `user_name` varchar(100) NOT NULL COMMENT '用户姓名',
   `password` varchar(20) NOT NULL COMMENT '用户密码',
   `status` varchar(20) NOT NULL COMMENT '状态',
+  `role`   varchar(20) NOT NULL COMMENT '用户角色',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='系统用户表';
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
+
+DROP TABLE IF EXISTS `user_crawl_record`;
+CREATE TABLE `user_crawl_record` (
+  `id` int(20) NOT NULL COMMENT '主键',
+  `user_id` int(20) NOT NULL COMMENT '用户id',
+  `system_code` int(20) NOT NULL COMMENT '游戏id',
+  `game_code` int(20) NOT NULL COMMENT '游戏id',
+  `crawl_count` int(10) DEFAULT NULL COMMENT '爬取条数',
+  `create_time` date DEFAULT NULL COMMENT '爬取时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_user_crawl_record`(`user_id`, `system_code`, `game_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='用户爬取记录表';
+
 
 DROP TABLE IF EXISTS `crawl_comment_xiaomi`;
 CREATE TABLE `crawl_comment_xiaomi` (

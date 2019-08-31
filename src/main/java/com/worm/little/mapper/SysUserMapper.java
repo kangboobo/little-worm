@@ -13,9 +13,23 @@ public interface SysUserMapper {
 
     SysUser selectByPrimaryKey(Integer userId);
 
-    SysUser selectByUserName(String userName);
-
     List<SysUser> selectAll();
 
     int updateByPrimaryKey(SysUser record);
+
+    /**
+     * 根据用户id获取用户信息
+     *
+     * @param userId
+     * @return
+     */
+    SysUser selectByUserId(String userId);
+
+    /**
+     * 根据关键词搜索用户
+     *
+     * @param keyword
+     * @return
+     */
+    List<SysUser> selectByKeyword(String keyword);
 }

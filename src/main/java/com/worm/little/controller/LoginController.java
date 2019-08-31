@@ -1,6 +1,8 @@
 package com.worm.little.controller;
 
 import com.worm.little.service.LoginService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +21,7 @@ import java.util.Map;
  */
 @Controller
 public class LoginController {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private LoginService loginService;

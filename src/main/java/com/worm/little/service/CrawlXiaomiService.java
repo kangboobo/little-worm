@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,6 +37,10 @@ public class CrawlXiaomiService {
 
     @Autowired
     private CrawlCommentXiaomiMapper crawlCommentXiaomiMapper;
+
+    public List<CrawlCommentXiaomi> getGameCommentList(Map<String,Object> param) {
+        return crawlCommentXiaomiMapper.getCommentList(param);
+    }
 
     public Object gameCommentCrawl(Long userId, Integer gameCode) {
         // 组织请求参数

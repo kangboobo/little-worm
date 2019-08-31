@@ -300,10 +300,10 @@ a:hover {
     padding-left: 25px; }
 
 .app-container.expanded .content-container .navbar-top {
-  padding-left: 250px; }
+  padding-left: 210px; }
 
 .app-container.expanded .content-container .side-menu {
-  width: 250px; }
+  width: 210px; }
   .app-container.expanded .content-container .side-menu .navbar-header .navbar-brand .title {
     display: inline-block; }
   .app-container.expanded .content-container .side-menu .navbar-nav li a .title {
