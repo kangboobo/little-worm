@@ -14,8 +14,8 @@
         <result column="like_count" property="likeCount" jdbcType="INTEGER"/>
         <result column="reply_count" property="replyCount" jdbcType="INTEGER"/>
         <result column="view_count" property="viewCount" jdbcType="INTEGER"/>
-        <result column="create_time" property="createTime" jdbcType="DATE"/>
-        <result column="update_time" property="updateTime" jdbcType="DATE"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
         <result column="play_duration" property="playDuration" jdbcType="INTEGER"/>
         <result column="content" property="content" jdbcType="LONGVARCHAR"/>
         <result column="top_reply" property="topReply" jdbcType="LONGVARCHAR"/>
@@ -34,7 +34,7 @@
     values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{gameCode,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER}, #{viewpointId,jdbcType=VARCHAR},
       #{uuid,jdbcType=INTEGER}, #{nickname,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, 
       #{score,jdbcType=INTEGER}, #{likeCount,jdbcType=INTEGER}, #{replyCount,jdbcType=INTEGER}, 
-      #{viewCount,jdbcType=INTEGER}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}, 
+      #{viewCount,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
       #{playDuration,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}, #{topReply,jdbcType=LONGVARCHAR}
       )
   </insert>
@@ -51,8 +51,8 @@
       like_count = #{likeCount,jdbcType=INTEGER},
       reply_count = #{replyCount,jdbcType=INTEGER},
       view_count = #{viewCount,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=DATE},
-      update_time = #{updateTime,jdbcType=DATE},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
       play_duration = #{playDuration,jdbcType=INTEGER},
       content = #{content,jdbcType=LONGVARCHAR},
       top_reply = #{topReply,jdbcType=LONGVARCHAR}
@@ -72,20 +72,19 @@
     <!--批量新增-->
     <insert id="batchInsert" parameterType="java.util.List">
         insert into crawl_comment_xiaomi (
-        id, user_id, game_code, sort, viewpoint_id,
-        uuid, nickname, sex,
+        id, user_id, game_code, sort,
+        viewpoint_id, uuid, nickname, sex,
         score, like_count, reply_count,
         view_count, create_time, update_time,
         play_duration, content, top_reply
         ) values
         <foreach collection="list" item="it" separator=",">
             (
-            #{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{gameCode,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER},
-            #{viewpointId,jdbcType=VARCHAR},
-            #{uuid,jdbcType=INTEGER}, #{nickname,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},
-            #{score,jdbcType=INTEGER}, #{likeCount,jdbcType=INTEGER}, #{replyCount,jdbcType=INTEGER},
-            #{viewCount,jdbcType=INTEGER}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE},
-            #{playDuration,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}, #{topReply,jdbcType=LONGVARCHAR}
+            #{it.id,jdbcType=BIGINT}, #{it.userId,jdbcType=BIGINT}, #{it.gameCode,jdbcType=INTEGER}, #{it.sort,jdbcType=INTEGER},
+            #{it.viewpointId,jdbcType=VARCHAR}, #{it.uuid,jdbcType=INTEGER}, #{it.nickname,jdbcType=VARCHAR}, #{it.sex,jdbcType=VARCHAR},
+            #{it.score,jdbcType=INTEGER}, #{it.likeCount,jdbcType=INTEGER}, #{it.replyCount,jdbcType=INTEGER},
+            #{it.viewCount,jdbcType=INTEGER}, #{it.createTime,jdbcType=TIMESTAMP}, #{it.updateTime,jdbcType=TIMESTAMP},
+            #{it.playDuration,jdbcType=INTEGER}, #{it.content,jdbcType=LONGVARCHAR}, #{it.topReply,jdbcType=LONGVARCHAR}
             )
         </foreach>
     </insert>
@@ -121,5 +120,6 @@
     <if test="endDate != null and endDate != ''">
         and update_time &lt;=  #{endDate,jdbcType=VARCHAR}
     </if>
+    order by sort desc
     </select>
 </mapper>

@@ -28,6 +28,16 @@ public class UserController {
     private UserService userService;
 
     /**
+     * 前往用户列表页面
+     *
+     * @return
+     */
+    @RequestMapping(value = "/user_manage", method = RequestMethod.GET)
+    public Object getUserList() {
+        return "user_manage";
+    }
+
+    /**
      * 查询用户列表
      *
      * @param keyword
@@ -36,7 +46,7 @@ public class UserController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/userManage", method = RequestMethod.GET)
+    @RequestMapping(value = "/user_manage_list", method = RequestMethod.GET)
     public Object getUserList(@RequestParam(value = "keyword", required = false) String keyword,
                               Model model,
                               HttpServletResponse response,
@@ -45,7 +55,6 @@ public class UserController {
         List<SysUser> sysUsers = userService.getUserList(keyword);
         //放在请求域中
         model.addAttribute("sys_users", sysUsers);
-        model.addAttribute("keyword", keyword);
-        return "user_manage";
+        return "user_manage::table_refresh";
     }
 }

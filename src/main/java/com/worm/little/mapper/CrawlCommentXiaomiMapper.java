@@ -1,6 +1,7 @@
 package com.worm.little.mapper;
 
 import com.worm.little.entity.CrawlCommentXiaomi;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface CrawlCommentXiaomiMapper {
      *
      * @param recordList
      */
-    void batchInsert(List<CrawlCommentXiaomi> recordList);
+    void batchInsert(@Param("list") List<CrawlCommentXiaomi> recordList);
 
     /**
      * 获取评论

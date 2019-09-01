@@ -90,7 +90,7 @@
                             <div id="dropdown-element" class="panel-collapse collapse">
                                 <div class="panel-body">
                                     <ul class="nav navbar-nav">
-                                        <li><a href="/userManage">用户列表</a></li>
+                                        <li><a href="/user_manage">用户列表</a></li>
                                         <li><a href="../ui-kits/theming.html">用户爬取记录</a></li>
                                     </ul>
                                 </div>
@@ -119,14 +119,15 @@
                             </div>
                             <div class="card-body">
                                 <div class="top">
-                                    <form id="search-form" th:action="@{/userManage}" method="get">
+                                    <form id="search-form">
                                     <div class="form-inline">
                                         <input type="text" class="form-control" name="keyword" id="keyword"
                                                placeholder="输入姓名搜索">
-                                        <button id="search-user" type="submit" class="btn btn-info">搜索</button>
+                                        <button id="search_user" type="button" class="btn btn-info">搜索</button>
                                     </div>
                                     </form>
                                 </div>
+                                <div id="table_refresh"  th:fragment="table_refresh">
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
@@ -145,6 +146,7 @@
                                     </tr>
                                     </tbody>
                                 </table>
+                                </div>
                                 <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
                                     <ul class="pagination">
                                         <li class="paginate_button previous disabled" id="DataTables_Table_0_previous">
@@ -202,8 +204,12 @@
 </body>
 
 <script type="text/javascript">
-
-
+    // 搜索按钮事件
+    $('#search_user').click(function () {
+        // 装载局部刷新返回的页面
+        var url = '/user_manage_list?keyword=' + $("#keyword").val() ;
+        $('#table_refresh').load(url);
+    })
 </script>
 
 </html>

@@ -1,5 +1,6 @@
 package com.worm.little.entity;
 
+import java.beans.Transient;
 import java.util.Date;
 
 public class CrawlCommentXiaomi {
@@ -36,6 +37,10 @@ public class CrawlCommentXiaomi {
     private String content;
 
     private String topReply;
+
+    private String createTimeStr;
+
+    private String updateTimeStr;
 
     public Long getId() {
         return id;
@@ -171,5 +176,25 @@ public class CrawlCommentXiaomi {
 
     public void setTopReply(String topReply) {
         this.topReply = topReply == null ? null : topReply.trim();
+    }
+
+    @Transient
+    public String getCreateTimeStr() {
+        return createTimeStr;
+    }
+
+    @Transient
+    public void setCreateTimeStr(String createTimeStr) {
+        this.createTimeStr = createTimeStr;
+    }
+
+    @Transient
+    public String getUpdateTimeStr() {
+        return updateTimeStr;
+    }
+
+    @Transient
+    public void setUpdateTimeStr(String updateTimeStr) {
+        this.updateTimeStr = updateTimeStr;
     }
 }

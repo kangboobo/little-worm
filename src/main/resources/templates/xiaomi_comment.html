@@ -92,7 +92,7 @@
                             <div id="dropdown-element" class="panel-collapse collapse">
                                 <div class="panel-body">
                                     <ul class="nav navbar-nav">
-                                        <li><a href="/userManage">用户列表</a></li>
+                                        <li><a href="/user_manage">用户列表</a></li>
                                         <li><a href="../ui-kits/theming.html">用户爬取记录</a></li>
                                     </ul>
                                 </div>
@@ -121,19 +121,21 @@
                             </div>
                             <div class="card-body">
                                 <div class="top">
-                                    <form id="search-form" th:action="@{/xiaomi_comment}" method="get">
+                                    <form id="craw_form">
                                         <div class="form-inline">
                                             <div class="form-group">
-                                                <input id = "start_date" name="start_date" class="form-control"type="text" placeholder="开始日期">
-                                                <input id = "end_date" name="end_date" class="form-control" type="text" placeholder="结束日期">
+                                                <input id = "start_date" name="start_date" class="form-control"type="text" placeholder="开始日期" autocomplete="off">
+                                                <input id = "end_date" name="end_date" class="form-control" type="text" placeholder="结束日期" autocomplete="off">
                                                 <input type="text" class="form-control" name="game_code" id="game_code" placeholder="输入游戏id搜索">
-                                                <button id="search-user" type="submit" class="btn btn-info">搜索</button>
-                                                <button id="craw_btn" type="submit" class="btn btn-success">爬取</button>
+                                                <button type="button" id="search_comment" class="btn btn-info">搜索</button>
+                                                <button type="button" id="craw_btn" class="btn btn-success">爬取</button>
                                             </div>
                                         </div>
                                     </form>
                                 </div>
-                                <table class="table table-striped">
+                                <hr>
+                                <div id="table_refresh"  th:fragment="table_refresh">
+                                <table class="table table-striped table-bordered">
                                     <thead>
                                     <tr>
                                         <th>序号</th>
@@ -152,7 +154,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="crawl_comment: ${crawl_comments}">
+                                    <tr th:each="crawl_comment: ${pageInfo?.list}">
                                         <td th:text="${crawl_comment.sort}"></td>
                                         <td th:text="${crawl_comment.gameCode}"></td>
                                         <td th:text="${crawl_comment.nickname}"></td>
@@ -162,8 +164,8 @@
                                         <td th:text="${crawl_comment.likeCount}"></td>
                                         <td th:text="${crawl_comment.replyCount}"></td>
                                         <td th:text="${crawl_comment.viewCount}"></td>
-                                        <td th:text="${crawl_comment.createTime}"></td>
-                                        <td th:text="${crawl_comment.updateTime}"></td>
+                                        <td th:text="${crawl_comment.createTimeStr}"></td>
+                                        <td th:text="${crawl_comment.updateTimeStr}"></td>
                                         <td th:text="${crawl_comment.playDuration}"></td>
                                         <td th:text="${crawl_comment.topReply}"></td>
                                     </tr>
@@ -193,6 +195,7 @@
                                                                                                          tabindex="0">下一页</a>
                                         </li>
                                     </ul>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -266,27 +269,36 @@
 
         });
     }
-
+    // 日期选择器
     DatePicker("#start_date", "#end_date");
 
-    $(function(){
-        $('#jsStayBtn').off().on('click', function(){
-            $.ajax({
-                cache: false,
-                type: "POST",
-                url:"/org/add_ask/",
-                data:$('#jsStayForm').serialize(),
-                async: true,
-                success: function(data) {
-                    if(data.status == 'success'){
-                        $('#jsStayForm')[0].reset();
-                        alert("提交成功")
-                    }else if(data.status == 'fail'){
-                        $('#jsCompanyTips').html(data.msg)
-                    }
-                },
-            });
-        });
+    // 搜索按钮事件
+    $('#search_comment').click(function () {
+        // 装载局部刷新返回的页面
+        var url = '/xiaomi_comment_list?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
+        $('#table_refresh').load(url);
+    })
+
+    // 爬取按钮事件
+    $('#craw_btn').click(function () {
+        var gameCode = $("#game_code").val();
+        if(gameCode == null || gameCode == "" || gameCode == undefined){
+            alert("游戏id不能为空");
+        }
+        var url = '/xiaomi_crawl?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
+        $.ajax({
+            url: url,
+            type: 'get',
+            data: {
+
+            },
+            success: function (data) {
+                alert("爬取成功");
+            },
+            error:function(jqXHR){
+                aler("请求失败："+ jqXHR.status);
+            }
+        })
     })
 
 

@@ -1,6 +1,7 @@
 package com.worm.little.controller;
 
 
+import com.github.pagehelper.PageInfo;
 import com.worm.little.entity.CrawlCommentXiaomi;
 import com.worm.little.service.CrawlXiaomiService;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +32,16 @@ public class CrawlXiaomiController {
     private CrawlXiaomiService crawlXiaomiService;
 
     /**
+     * 前往小米评论数据页面
+     *
+     * @return
+     */
+    @RequestMapping(value = "/xiaomi_comment", method = RequestMethod.GET)
+    public Object getGameComment() {
+        return "xiaomi_comment";
+    }
+
+    /**
      * 查询小米评论数据
      *
      * @param gameCode 游戏id
@@ -40,7 +50,7 @@ public class CrawlXiaomiController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/xiaomi_comment", method = RequestMethod.GET)
+    @RequestMapping(value = "/xiaomi_comment_list", method = RequestMethod.GET)
     public Object getGameCommentList(@RequestParam(value = "game_code", required = false) String gameCode,
                                      @RequestParam(value = "start_date", required = false) String startDate,
                                      @RequestParam(value = "end_date", required = false) String endDate,
@@ -59,10 +69,10 @@ public class CrawlXiaomiController {
         if(StringUtils.isNotEmpty(endDate)) {
             param.put("endDate", endDate);
         }
-        List<CrawlCommentXiaomi> crawlComments = crawlXiaomiService.getGameCommentList(param);
+        PageInfo<CrawlCommentXiaomi> pageInfo = crawlXiaomiService.getGameCommentList(param);
         //放在请求域中
-        model.addAttribute("crawl_comments", crawlComments);
-        return "xiaomi_comment";
+        model.addAttribute("pageInfo", pageInfo);
+        return "xiaomi_comment::table_refresh";
     }
 
     /**
@@ -74,12 +84,14 @@ public class CrawlXiaomiController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/xiaomi_crawl", method = RequestMethod.POST)
-    public Object gameCommentCrawl(@RequestParam(value = "gameCode", required = false) Integer gameCode,
+    @RequestMapping(value = "/xiaomi_crawl", method = RequestMethod.GET)
+    public Object gameCommentCrawl(@RequestParam(value = "game_code", required = false) String gameCode,
+                                   @RequestParam(value = "start_date", required = false) String startDate,
+                                   @RequestParam(value = "end_date", required = false) String endDate,
                                    Model model,
                                    HttpServletResponse response,
                                    HttpServletRequest request) {
         Long userId = (Long) request.getSession().getAttribute("userId");// 从该用户的session中获取用户id
-        return crawlXiaomiService.gameCommentCrawl(userId, gameCode);
+        return crawlXiaomiService.gameCommentCrawl(userId, Long.parseLong(gameCode));
     }
 }
