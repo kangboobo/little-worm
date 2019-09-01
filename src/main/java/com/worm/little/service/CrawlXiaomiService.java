@@ -41,7 +41,7 @@ public class CrawlXiaomiService {
     private CrawlCommentXiaomiMapper crawlCommentXiaomiMapper;
 
     public PageInfo<CrawlCommentXiaomi> getGameCommentList(Map<String, Object> param) {
-        PageHelper.startPage(1, 10);
+        PageHelper.startPage(1, 20);
         List<CrawlCommentXiaomi> crawlCommentXiaomis = crawlCommentXiaomiMapper.getCommentList(param);
         PageInfo<CrawlCommentXiaomi> pageInfo = new PageInfo<CrawlCommentXiaomi>(crawlCommentXiaomis);
         List<CrawlCommentXiaomi> list = pageInfo.getList();

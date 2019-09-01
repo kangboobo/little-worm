@@ -25,7 +25,7 @@
     <link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_1379614_7kwlk8an72d.css">
 
     <link rel="stylesheet" type="text/css" href="dist/lib/css/bootstrap-datetimepicker.css">
-    <link href="https://cdn.bootcss.com/bootstrap-validator/0.5.3/css/bootstrapValidator.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="dist/lib/css/bootstrapValidator.min.css">
 </head>
 
 <body class="flat-blue">
@@ -38,7 +38,7 @@
                         <i class="fa fa-bars icon"></i>
                     </button>
                     <ol class="breadcrumb navbar-breadcrumb">
-                        <li class="active">小米游戏</li>
+                        <li class="active">小米游戏评论</li>
                     </ol>
                     <button type="button" class="navbar-right-expand-toggle pull-right visible-xs">
                         <i class="fa fa-th icon"></i>
@@ -114,88 +114,60 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="card">
-                            <div class="card-header">
-                                <div class="card-title">
-                                    <div class="title">小米游戏评论爬取</div>
-                                </div>
-                            </div>
                             <div class="card-body">
-                                <div class="top">
+                                <div class="top" >
                                     <form id="craw_form">
                                         <div class="form-inline">
                                             <div class="form-group">
                                                 <input id = "start_date" name="start_date" class="form-control"type="text" placeholder="开始日期" autocomplete="off">
                                                 <input id = "end_date" name="end_date" class="form-control" type="text" placeholder="结束日期" autocomplete="off">
                                                 <input type="text" class="form-control" name="game_code" id="game_code" placeholder="输入游戏id搜索">
-                                                <button type="button" id="search_comment" class="btn btn-info">搜索</button>
-                                                <button type="button" id="craw_btn" class="btn btn-success">爬取</button>
+                                                <button type="button" id="search_comment" class="btn btn-info">&nbsp;&nbsp;搜索&nbsp;&nbsp;</button>
+                                                <button type="button" id="craw_btn" class="btn btn-success">&nbsp;&nbsp;爬取&nbsp;&nbsp;</button>
+                                                <button type="button" id="export_btn" class="btn btn-warning">&nbsp;&nbsp;导出&nbsp;&nbsp;</button>
                                             </div>
                                         </div>
                                     </form>
                                 </div>
-                                <hr>
                                 <div id="table_refresh"  th:fragment="table_refresh">
-                                <table class="table table-striped table-bordered">
+                                <table class="table table-striped table-bordered table-hover"  style='table-layout:fixed;'>
                                     <thead>
                                     <tr>
-                                        <th>序号</th>
-                                        <th>游戏id</th>
-                                        <th>用户名</th>
-                                        <th>性别</th>
-                                        <th>评分</th>
-                                        <th>评论内容</th>
-                                        <th>点赞数</th>
-                                        <th>回复数</th>
-                                        <th>浏览数</th>
-                                        <th>发表时间</th>
-                                        <th>更新时间</th>
-                                        <th>游戏时长</th>
-                                        <th>置顶回复</th>
+                                        <th style='width:5%;'>序号</th>
+                                        <th style='width:5%;'>游戏id</th>
+                                        <th style='width:10%;'>用户名</th>
+                                        <th style='width:3%;'>性别</th>
+                                        <th style='width:3%;'>评分</th>
+                                        <th style='width:20%;'>评论内容</th>
+                                        <th style='width:4%;'>点赞数</th>
+                                        <th style='width:4%;'>回复数</th>
+                                        <th style='width:4%;'>浏览数</th>
+                                        <th style='width:8%;'>发表时间</th>
+                                        <th style='width:8%;'>更新时间</th>
+                                        <th style='width:6%;'>游戏时长</th>
+                                        <th style='width:20%;'>置顶回复</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="crawl_comment: ${pageInfo?.list}">
                                         <td th:text="${crawl_comment.sort}"></td>
                                         <td th:text="${crawl_comment.gameCode}"></td>
-                                        <td th:text="${crawl_comment.nickname}"></td>
+                                        <td th:text="${crawl_comment.nickname}"  style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></td>
                                         <td th:text="${crawl_comment.sex}"></td>
                                         <td th:text="${crawl_comment.score}"></td>
-                                        <td th:text="${crawl_comment.content}"></td>
+                                        <td th:text="${crawl_comment.content}" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></td>
                                         <td th:text="${crawl_comment.likeCount}"></td>
                                         <td th:text="${crawl_comment.replyCount}"></td>
                                         <td th:text="${crawl_comment.viewCount}"></td>
                                         <td th:text="${crawl_comment.createTimeStr}"></td>
                                         <td th:text="${crawl_comment.updateTimeStr}"></td>
                                         <td th:text="${crawl_comment.playDuration}"></td>
-                                        <td th:text="${crawl_comment.topReply}"></td>
+                                        <td th:text="${crawl_comment.topReply}" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></td>
                                     </tr>
                                     </tbody>
                                 </table>
-                                <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
-                                    <ul class="pagination">
-                                        <li class="paginate_button previous disabled" id="DataTables_Table_0_previous">
-                                            <a href="#" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0">上一页</a>
-                                        </li>
-                                        <li class="paginate_button active"><a href="#"
-                                                                              aria-controls="DataTables_Table_0"
-                                                                              data-dt-idx="1" tabindex="0">1</a></li>
-                                        <li class="paginate_button "><a href="#" aria-controls="DataTables_Table_0"
-                                                                        data-dt-idx="2" tabindex="0">2</a></li>
-                                        <li class="paginate_button "><a href="#" aria-controls="DataTables_Table_0"
-                                                                        data-dt-idx="3" tabindex="0">3</a></li>
-                                        <li class="paginate_button "><a href="#" aria-controls="DataTables_Table_0"
-                                                                        data-dt-idx="4" tabindex="0">4</a></li>
-                                        <li class="paginate_button "><a href="#" aria-controls="DataTables_Table_0"
-                                                                        data-dt-idx="5" tabindex="0">5</a></li>
-                                        <li class="paginate_button "><a href="#" aria-controls="DataTables_Table_0"
-                                                                        data-dt-idx="6" tabindex="0">6</a></li>
-                                        <li class="paginate_button next" id="DataTables_Table_0_next"><a href="#"
-                                                                                                         aria-controls="DataTables_Table_0"
-                                                                                                         data-dt-idx="7"
-                                                                                                         tabindex="0">下一页</a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                    <!-- 分页容器： 显示分页按钮-->
+                                    <div id="Paginator" style="text-align: center"> <ul id="pageLimit"></ul> </div>
                                 </div>
                             </div>
                         </div>
@@ -229,7 +201,8 @@
 
 <script type="text/javascript" src="dist/lib/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="dist/lib/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
-<script src="https://cdn.bootcss.com/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="dist/lib/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="dist/lib/js/bootstrap-paginator.js"></script>
 </body>
 
 <script type="text/javascript">
@@ -274,6 +247,11 @@
 
     // 搜索按钮事件
     $('#search_comment').click(function () {
+        var gameCode = $("#game_code").val();
+        if(gameCode == null || gameCode == "" || gameCode == undefined){
+            alert("游戏id不能为空");
+            return
+        }
         // 装载局部刷新返回的页面
         var url = '/xiaomi_comment_list?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
         $('#table_refresh').load(url);
@@ -284,6 +262,7 @@
         var gameCode = $("#game_code").val();
         if(gameCode == null || gameCode == "" || gameCode == undefined){
             alert("游戏id不能为空");
+            return
         }
         var url = '/xiaomi_crawl?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
         $.ajax({
@@ -301,6 +280,47 @@
         })
     })
 
+    // 导出按钮事件
+    $('#export_btn').click(function () {
+        var gameCode = $("#game_code").val();
+        if(gameCode == null || gameCode == "" || gameCode == undefined){
+            alert("游戏id不能为空");
+            return
+        }
+        var url = '/xiaomi_export?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
+        $.ajax({
+            url: url,
+            type: 'get',
+            data: {
+
+            },
+            success: function (data) {
+                alert("导出成功");
+            },
+            error:function(jqXHR){
+                aler("请求失败："+ jqXHR.status);
+            }
+        })
+    })
+
+    // 分页按钮
+    $('#pageLimit').bootstrapPaginator({
+        currentPage: 1,
+        totalPages: 10,
+        size:"normal",
+        bootstrapMajorVersion: 3,
+        alignment:"right",
+        numberOfPages:10,
+        itemTexts: function (type, page, current) {
+            switch (type) {
+                case "first": return "首页";
+                case "prev": return "上一页";
+                case "next": return "下一页";
+                case "last": return "末页";
+                case "page": return page;
+            }
+        }
+    });
 
 </script>
 
