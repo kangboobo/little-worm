@@ -125,6 +125,7 @@
                                                 <button type="button" id="search_comment" class="btn btn-info">&nbsp;&nbsp;搜索&nbsp;&nbsp;</button>
                                                 <button type="button" id="craw_btn" class="btn btn-success">&nbsp;&nbsp;爬取&nbsp;&nbsp;</button>
                                                 <button type="button" id="export_btn" class="btn btn-warning">&nbsp;&nbsp;导出&nbsp;&nbsp;</button>
+                                                <a id="download" href="" name="" ></a>
                                             </div>
                                         </div>
                                     </form>
@@ -287,20 +288,27 @@
             alert("游戏id不能为空");
             return
         }
-        var url = '/xiaomi_export?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
-        $.ajax({
-            url: url,
-            type: 'get',
-            data: {
 
-            },
-            success: function (data) {
-                alert("导出成功");
-            },
-            error:function(jqXHR){
-                aler("请求失败："+ jqXHR.status);
-            }
-        })
+        var x =  $(".ace input:checked").parent().next().next().val();
+        var hrefs = '<%=basePath%>xiaomi_export?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
+        $('#download').attr('href',hrefs);
+        $("#download").append("<span></span>");
+        $("#download span").click();
+
+//        var url = '/xiaomi_export?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
+//        $.ajax({
+//            url: url,
+//            type: 'get',
+//            data: {
+//
+//            },
+//            success: function (data) {
+//                alert("导出成功");
+//            },
+//            error:function(jqXHR){
+//                aler("请求失败："+ jqXHR.status);
+//            }
+//        })
     })
 
     // 分页按钮
