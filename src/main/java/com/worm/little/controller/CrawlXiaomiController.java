@@ -140,7 +140,8 @@ public class CrawlXiaomiController {
             if (file.exists()) {
                 file.getAbsoluteFile().delete();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
+            logger.error("/xiaomi_export error, gameCode={}, startDate={}, endDate={}", gameCode, startDate, endDate, e);
             model.addAttribute("code", 2);
             model.addAttribute("msg", "导出文件失败");
             return null;
