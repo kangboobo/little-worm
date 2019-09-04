@@ -4,6 +4,7 @@ package com.worm.little.controller;
 import com.github.pagehelper.PageInfo;
 import com.worm.little.entity.CrawlCommentXiaomi;
 import com.worm.little.service.CrawlXiaomiService;
+import com.worm.little.utils.ExportExcelUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +32,9 @@ public class CrawlXiaomiController {
 
     @Autowired
     private CrawlXiaomiService crawlXiaomiService;
+
+    @Autowired
+    private ExportExcelUtil exportExcelUtil;
 
     /**
      * 前往小米评论数据页面
@@ -107,9 +112,42 @@ public class CrawlXiaomiController {
     public Object exportComment(@RequestParam(value = "game_code", required = true) String gameCode,
                                 @RequestParam(value = "start_date", required = false) String startDate,
                                 @RequestParam(value = "end_date", required = false) String endDate,
+                                Model model,
                                 HttpServletResponse response,
                                 HttpServletRequest request) {
         Long userId = (Long) request.getSession().getAttribute("userId");// 从该用户的session中获取用户id
+        Map<String, Object> param = new HashMap<>();
+        param.put("userId", userId);
+        if (StringUtils.isNotEmpty(gameCode)) {
+            param.put("gameCode", gameCode.trim());
+        }
+        if (StringUtils.isNotEmpty(startDate)) {
+            param.put("startDate", startDate);
+        }
+        if (StringUtils.isNotEmpty(endDate)) {
+            param.put("endDate", endDate);
+        }
+        try {
+            File file = crawlXiaomiService.exportComment(param);
+            if (file == null) {
+                model.addAttribute("code", 1);
+                model.addAttribute("msg", "导出数据为空");
+                return null;
+            }
+            // 下载文件到客户端
+            exportExcelUtil.exportExcelFromLocal(request, response, file);
+            // 下载完毕后删除服务端文件
+            if (file.exists()) {
+                file.getAbsoluteFile().delete();
+            }
+        }catch (Exception e){
+            model.addAttribute("code", 2);
+            model.addAttribute("msg", "导出文件失败");
+            return null;
+        }
+
+        model.addAttribute("code", 0);
+        model.addAttribute("msg", "导出文件成功");
         return null;
     }
 }

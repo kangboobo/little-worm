@@ -16,7 +16,7 @@
         <result column="view_count" property="viewCount" jdbcType="INTEGER"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
-        <result column="play_duration" property="playDuration" jdbcType="INTEGER"/>
+        <result column="play_duration" property="playDuration" jdbcType="BIGINT"/>
         <result column="content" property="content" jdbcType="LONGVARCHAR"/>
         <result column="top_reply" property="topReply" jdbcType="LONGVARCHAR"/>
     </resultMap>
@@ -35,7 +35,7 @@
       #{uuid,jdbcType=INTEGER}, #{nickname,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, 
       #{score,jdbcType=INTEGER}, #{likeCount,jdbcType=INTEGER}, #{replyCount,jdbcType=INTEGER}, 
       #{viewCount,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
-      #{playDuration,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}, #{topReply,jdbcType=LONGVARCHAR}
+      #{playDuration,jdbcType=BIGINT}, #{content,jdbcType=LONGVARCHAR}, #{topReply,jdbcType=LONGVARCHAR}
       )
   </insert>
     <update id="updateByPrimaryKey" parameterType="com.worm.little.entity.CrawlCommentXiaomi">
@@ -53,7 +53,7 @@
       view_count = #{viewCount,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      play_duration = #{playDuration,jdbcType=INTEGER},
+      play_duration = #{playDuration,jdbcType=BIGINT},
       content = #{content,jdbcType=LONGVARCHAR},
       top_reply = #{topReply,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
@@ -84,7 +84,7 @@
             #{it.viewpointId,jdbcType=VARCHAR}, #{it.uuid,jdbcType=INTEGER}, #{it.nickname,jdbcType=VARCHAR}, #{it.sex,jdbcType=VARCHAR},
             #{it.score,jdbcType=INTEGER}, #{it.likeCount,jdbcType=INTEGER}, #{it.replyCount,jdbcType=INTEGER},
             #{it.viewCount,jdbcType=INTEGER}, #{it.createTime,jdbcType=TIMESTAMP}, #{it.updateTime,jdbcType=TIMESTAMP},
-            #{it.playDuration,jdbcType=INTEGER}, #{it.content,jdbcType=LONGVARCHAR}, #{it.topReply,jdbcType=LONGVARCHAR}
+            #{it.playDuration,jdbcType=BIGINT}, #{it.content,jdbcType=LONGVARCHAR}, #{it.topReply,jdbcType=LONGVARCHAR}
             )
         </foreach>
     </insert>

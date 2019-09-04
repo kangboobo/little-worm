@@ -32,7 +32,7 @@ public class CrawlCommentXiaomi {
 
     private Date updateTime;
 
-    private Integer playDuration;
+    private Long playDuration;
 
     private String content;
 
@@ -154,11 +154,11 @@ public class CrawlCommentXiaomi {
         this.updateTime = updateTime;
     }
 
-    public Integer getPlayDuration() {
+    public Long getPlayDuration() {
         return playDuration;
     }
 
-    public void setPlayDuration(Integer playDuration) {
+    public void setPlayDuration(Long playDuration) {
         this.playDuration = playDuration;
     }
 

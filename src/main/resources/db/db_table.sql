@@ -49,7 +49,7 @@ CREATE TABLE `crawl_comment_xiaomi` (
   `create_time` datetime DEFAULT NULL COMMENT '发表时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `top_reply` text DEFAULT NULL COMMENT '置顶回复',
-  `play_duration` int(20) DEFAULT NULL COMMENT '游戏时长：单位毫秒',
+  `play_duration` bigint(20) DEFAULT NULL COMMENT '游戏时长：单位毫秒',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_comment_xiaomi`(`user_id`, `game_code`, `sort`),
   KEY `idx_comment_xiaomi`(`viewpoint_id`)

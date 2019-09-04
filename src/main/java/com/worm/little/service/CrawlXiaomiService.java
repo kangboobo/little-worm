@@ -4,18 +4,23 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.worm.little.constans.Constans;
 import com.worm.little.entity.CrawlCommentXiaomi;
 import com.worm.little.mapper.CrawlCommentXiaomiMapper;
+import com.worm.little.utils.ExcelUtils;
 import com.worm.little.utils.HttpCilentUtil;
 import com.worm.little.utils.IdWorker;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.assertj.core.util.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -40,6 +45,15 @@ public class CrawlXiaomiService {
     @Autowired
     private CrawlCommentXiaomiMapper crawlCommentXiaomiMapper;
 
+    @Value("${export.file.path}")
+    private String filePath;
+
+    /**
+     * 查询评论数据列表
+     *
+     * @param param
+     * @return
+     */
     public PageInfo<CrawlCommentXiaomi> getGameCommentList(Map<String, Object> param) {
         PageHelper.startPage(1, 20);
         List<CrawlCommentXiaomi> crawlCommentXiaomis = crawlCommentXiaomiMapper.getCommentList(param);
@@ -52,6 +66,62 @@ public class CrawlXiaomiService {
             crawlCommentXiaomi.setUpdateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
         }
         return pageInfo;
+    }
+
+    /**
+     * 导出评论数据
+     *
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public File exportComment(Map<String, Object> param) throws Exception {
+        String gameCode = (String) param.get("gameCode");
+        List<CrawlCommentXiaomi> crawlCommentXiaomis = crawlCommentXiaomiMapper.getCommentList(param);
+        if (CollectionUtils.isEmpty(crawlCommentXiaomis)) {
+
+        }
+        // 限制导出最大条数
+        if (crawlCommentXiaomis.size() > Constans.EXPORT_COUNT_MAX_DEFAULT) {
+            crawlCommentXiaomis = crawlCommentXiaomis.subList(0, Constans.EXPORT_COUNT_MAX_DEFAULT);
+        }
+        // 组织导出数据
+        List<String> titles = Lists.newArrayList();
+        List<List<String>> values = Lists.newArrayList();
+        titles.add("序号");
+        titles.add("用户名");
+        titles.add("性别");
+        titles.add("评分");
+        titles.add("评论");
+        titles.add("回复评论");
+        titles.add("点赞数");
+        titles.add("回复数");
+        titles.add("浏览数");
+        titles.add("发表时间");
+        titles.add("更新时间");
+        titles.add("游戏时长（分钟）");
+        for (int i = 0; i < crawlCommentXiaomis.size(); i++) {
+            CrawlCommentXiaomi crawlCommentXiaomi = crawlCommentXiaomis.get(i);
+            crawlCommentXiaomi.setSort(i + 1);
+            crawlCommentXiaomi.setCreateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+            crawlCommentXiaomi.setUpdateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
+
+            List<String> valueList = new ArrayList<>(13);
+            valueList.add(String.valueOf(crawlCommentXiaomi.getSort()));//序号
+            valueList.add(crawlCommentXiaomi.getNickname());// 用户名
+            valueList.add(crawlCommentXiaomi.getSex());// 性别
+            valueList.add(crawlCommentXiaomi.getScore() == null ? "" : crawlCommentXiaomi.getScore().toString());// 评分
+            valueList.add(crawlCommentXiaomi.getContent());//评论
+            valueList.add(crawlCommentXiaomi.getTopReply());//回复评论
+            valueList.add(crawlCommentXiaomi.getLikeCount() == null ? "" : crawlCommentXiaomi.getLikeCount().toString());//点赞数
+            valueList.add(crawlCommentXiaomi.getReplyCount() == null ? "" : crawlCommentXiaomi.getReplyCount().toString());//回复数
+            valueList.add(crawlCommentXiaomi.getViewCount() == null ? "" : crawlCommentXiaomi.getViewCount().toString());//浏览数
+            valueList.add(crawlCommentXiaomi.getCreateTimeStr());//发表时间
+            valueList.add(crawlCommentXiaomi.getUpdateTimeStr());//更新时间
+            valueList.add(crawlCommentXiaomi.getPlayDuration() == null ? "" : String.valueOf(crawlCommentXiaomi.getPlayDuration() / 60000));//游戏时长
+            values.add(valueList);
+        }
+        return ExcelUtils.exportDynamicExcelFile(titles, values, gameCode, "sheet1", filePath);
     }
 
     public Object gameCommentCrawl(Long userId, Long gameCode) {
@@ -130,7 +200,7 @@ public class CrawlXiaomiService {
                         Integer viewCount = viewpoint.getInteger("viewCount");
                         Date createTime = viewpoint.getDate("createTime");
                         Date updateTime = viewpoint.getDate("updateTime");
-                        Integer playDuration = viewpoint.getInteger("playDuration");
+                        Long playDuration = viewpoint.getLong("playDuration");
                         CrawlCommentXiaomi crawlCommentXiaomi = new CrawlCommentXiaomi();
                         crawlCommentXiaomi.setId(idWorker.nextId());
                         crawlCommentXiaomi.setUserId(userId);
