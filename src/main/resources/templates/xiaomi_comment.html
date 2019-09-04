@@ -125,7 +125,30 @@
                                                 <button type="button" id="search_comment" class="btn btn-info">&nbsp;&nbsp;搜索&nbsp;&nbsp;</button>
                                                 <button type="button" id="craw_btn" class="btn btn-success">&nbsp;&nbsp;爬取&nbsp;&nbsp;</button>
                                                 <button type="button" id="export_btn" class="btn btn-warning">&nbsp;&nbsp;导出&nbsp;&nbsp;</button>
+                                                <button type="button" id="delete_btn_pre" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">&nbsp;&nbsp;清空&nbsp;&nbsp;</button>
                                                 <a id="download" href="" name="" ></a>
+                                            </div>
+                                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content"  align="center">
+                                                        <div class="modal-header" >
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                                            <h4 class="modal-title" id="exampleModalLabel">确认框</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form>
+                                                                <div class="form-group" align="center">
+                                                                    <label for="message-text" class="control-label">确定要清空数据？</label>
+                                                                    <span>(未输入游戏ID时会清空用户爬取的所有数据)</span>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer"  align="center">
+                                                            <button type="button" class="btn btn-success" data-dismiss="modal">取消</button>
+                                                            <button type="button" id="delete_btn" class="btn btn-danger" data-dismiss="modal">确认</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </form>
@@ -289,26 +312,38 @@
             return
         }
 
-        var x =  $(".ace input:checked").parent().next().next().val();
-        var hrefs = '<%=basePath%>xiaomi_export?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
+        var hrefs = '/xiaomi_export?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
         $('#download').attr('href',hrefs);
         $("#download").append("<span></span>");
         $("#download span").click();
+    })
 
-//        var url = '/xiaomi_export?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
-//        $.ajax({
-//            url: url,
-//            type: 'get',
-//            data: {
-//
-//            },
-//            success: function (data) {
-//                alert("导出成功");
-//            },
-//            error:function(jqXHR){
-//                aler("请求失败："+ jqXHR.status);
-//            }
-//        })
+
+    $('#myModal').on('shown.bs.modal', function () {
+        $('#myInput').focus()
+    })
+
+    // 清空按钮事件
+    $('#delete_btn').click(function () {
+        var gameCode = $("#game_code").val();
+        // if(gameCode == null || gameCode == "" || gameCode == undefined){
+        //     alert("游戏id不能为空");
+        //     return
+        // }
+        var url = '/xiaomi_delete?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: {
+
+            },
+            success: function (data) {
+                alert("清空数据成功");
+            },
+            error:function(jqXHR){
+                aler("清空数据失败："+ jqXHR.status);
+            }
+        })
     })
 
     // 分页按钮

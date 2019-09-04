@@ -64,6 +64,7 @@ public class CrawlXiaomiService {
             crawlCommentXiaomi.setSort(i + 1);
             crawlCommentXiaomi.setCreateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
             crawlCommentXiaomi.setUpdateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
+            crawlCommentXiaomi.setPlayDuration(crawlCommentXiaomi.getPlayDuration() == null ? 0 : crawlCommentXiaomi.getPlayDuration() / 1000);
         }
         return pageInfo;
     }
@@ -99,7 +100,7 @@ public class CrawlXiaomiService {
         titles.add("浏览数");
         titles.add("发表时间");
         titles.add("更新时间");
-        titles.add("游戏时长（分钟）");
+        titles.add("游戏时长（秒）");
         for (int i = 0; i < crawlCommentXiaomis.size(); i++) {
             CrawlCommentXiaomi crawlCommentXiaomi = crawlCommentXiaomis.get(i);
             crawlCommentXiaomi.setSort(i + 1);
@@ -118,12 +119,36 @@ public class CrawlXiaomiService {
             valueList.add(crawlCommentXiaomi.getViewCount() == null ? "" : crawlCommentXiaomi.getViewCount().toString());//浏览数
             valueList.add(crawlCommentXiaomi.getCreateTimeStr());//发表时间
             valueList.add(crawlCommentXiaomi.getUpdateTimeStr());//更新时间
-            valueList.add(crawlCommentXiaomi.getPlayDuration() == null ? "" : String.valueOf(crawlCommentXiaomi.getPlayDuration() / 60000));//游戏时长
+            valueList.add(crawlCommentXiaomi.getPlayDuration() == null ? "" : String.valueOf(crawlCommentXiaomi.getPlayDuration() / 1000));//游戏时长
             values.add(valueList);
         }
         return ExcelUtils.exportDynamicExcelFile(titles, values, gameCode, "sheet1", filePath);
     }
 
+    /**
+     * 清空评论数据
+     *
+     * @param param
+     * @return
+     */
+    public Map deleteComment(Map<String, Object> param) {
+        Map resultMap = new HashMap();
+        int deleteCount = crawlCommentXiaomiMapper.deleteCommentByParam(param);
+        if (deleteCount > 0) {
+            resultMap.put("deleted", "true");
+        } else {
+            resultMap.put("deleted", "false");
+        }
+        return resultMap;
+    }
+
+    /**
+     * 爬取小米游戏评论数据
+     *
+     * @param userId
+     * @param gameCode
+     * @return
+     */
     public Object gameCommentCrawl(Long userId, Long gameCode) {
         // 组织请求参数
         StringBuffer params = new StringBuffer();
@@ -207,7 +232,7 @@ public class CrawlXiaomiService {
                         crawlCommentXiaomi.setGameCode(gameCode);
                         crawlCommentXiaomi.setViewpointId(viewpointId);
                         crawlCommentXiaomi.setUuid(uuid);
-                        crawlCommentXiaomi.setNickname(nickname);
+                        crawlCommentXiaomi.setNickname(StringUtils.isNotEmpty(nickname) ? nickname : "匿名用户");
                         if (sex != null) {
                             crawlCommentXiaomi.setSex(sex == 1 ? "男" : "女");
                         } else {
@@ -221,6 +246,23 @@ public class CrawlXiaomiService {
                         crawlCommentXiaomi.setCreateTime(createTime);
                         crawlCommentXiaomi.setUpdateTime(updateTime);
                         crawlCommentXiaomi.setPlayDuration(playDuration);
+                        // 置顶回复
+                        StringBuffer sb = new StringBuffer();
+                        if (viewpoint.containsKey("topReplys")) {
+                            JSONArray topReplys = viewpoint.getJSONArray("topReplys");
+                            if (topReplys != null) {
+                                for (int j = 0; j < (topReplys.size() > 2 ? 2 : topReplys.size()); j++) {
+                                    JSONObject topReply = (JSONObject) topReplys.get(j);
+                                    if(topReply.containsKey("content")) {
+                                        if(j>0){
+                                            sb.append(" || ");
+                                        }
+                                        sb.append(topReply.getString("content"));
+                                    }
+                                }
+                            }
+                        }
+                        crawlCommentXiaomi.setTopReply(sb.toString());
                         crawlCommentXiaomis.add(crawlCommentXiaomi);
                     }
                 }

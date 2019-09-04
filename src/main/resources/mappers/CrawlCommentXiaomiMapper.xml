@@ -122,4 +122,18 @@
     </if>
     order by sort desc
     </select>
+
+    <delete id="deleteCommentByParam" parameterType="java.util.Map">
+    delete from crawl_comment_xiaomi
+    where user_id = #{userId,jdbcType=BIGINT}
+        <if test="gameCode != null">
+            and game_code = #{gameCode,jdbcType=BIGINT}
+        </if>
+        <if test="startDate != null and startDate != ''">
+            and update_time &gt;=  #{startDate,jdbcType=VARCHAR}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            and update_time &lt;=  #{endDate,jdbcType=VARCHAR}
+        </if>
+    </delete>
 </mapper>

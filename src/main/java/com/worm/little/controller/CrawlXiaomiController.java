@@ -151,4 +151,36 @@ public class CrawlXiaomiController {
         model.addAttribute("msg", "导出文件成功");
         return null;
     }
+
+    /**
+     * 清空小米游戏论坛评论数据
+     *
+     * @param gameCode 游戏id
+     * @param model
+     * @param response
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/xiaomi_delete", method = RequestMethod.POST)
+    public Object deleteComment(@RequestParam(value = "game_code", required = false) String gameCode,
+                                @RequestParam(value = "start_date", required = false) String startDate,
+                                @RequestParam(value = "end_date", required = false) String endDate,
+                                Model model,
+                                HttpServletResponse response,
+                                HttpServletRequest request) {
+        Long userId = (Long) request.getSession().getAttribute("userId");// 从该用户的session中获取用户id
+        Map<String, Object> param = new HashMap<>();
+        param.put("userId", userId);
+        if (StringUtils.isNotEmpty(gameCode)) {
+            param.put("gameCode", gameCode.trim());
+        }
+        if (StringUtils.isNotEmpty(startDate)) {
+            param.put("startDate", startDate);
+        }
+        if (StringUtils.isNotEmpty(endDate)) {
+            param.put("endDate", endDate);
+        }
+        crawlXiaomiService.deleteComment(param);
+        return null;
+    }
 }

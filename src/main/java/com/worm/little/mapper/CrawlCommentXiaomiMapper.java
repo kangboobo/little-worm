@@ -42,4 +42,12 @@ public interface CrawlCommentXiaomiMapper {
      */
     CrawlCommentXiaomi getLastComment(Map param);
 
+    /**
+     * 根据参数删除数据
+     *
+     * @param param
+     * @return
+     */
+    int deleteCommentByParam(Map param);
+
 }
