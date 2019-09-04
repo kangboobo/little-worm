@@ -54,14 +54,14 @@ public class CrawlXiaomiService {
      * @param param
      * @return
      */
-    public PageInfo<CrawlCommentXiaomi> getGameCommentList(Map<String, Object> param) {
-        PageHelper.startPage(1, 20);
+    public PageInfo<CrawlCommentXiaomi> getGameCommentList(Map<String, Object> param, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
         List<CrawlCommentXiaomi> crawlCommentXiaomis = crawlCommentXiaomiMapper.getCommentList(param);
         PageInfo<CrawlCommentXiaomi> pageInfo = new PageInfo<CrawlCommentXiaomi>(crawlCommentXiaomis);
         List<CrawlCommentXiaomi> list = pageInfo.getList();
         for (int i = 0; i < list.size(); i++) {
             CrawlCommentXiaomi crawlCommentXiaomi = list.get(i);
-            crawlCommentXiaomi.setSort(i + 1);
+            crawlCommentXiaomi.setSort(i + 1 + pageSize * (pageNum - 1));
             crawlCommentXiaomi.setCreateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
             crawlCommentXiaomi.setUpdateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
             crawlCommentXiaomi.setPlayDuration(crawlCommentXiaomi.getPlayDuration() == null ? 0 : crawlCommentXiaomi.getPlayDuration() / 1000);
@@ -253,8 +253,8 @@ public class CrawlXiaomiService {
                             if (topReplys != null) {
                                 for (int j = 0; j < (topReplys.size() > 2 ? 2 : topReplys.size()); j++) {
                                     JSONObject topReply = (JSONObject) topReplys.get(j);
-                                    if(topReply.containsKey("content")) {
-                                        if(j>0){
+                                    if (topReply.containsKey("content")) {
+                                        if (j > 0) {
                                             sb.append(" || ");
                                         }
                                         sb.append(topReply.getString("content"));

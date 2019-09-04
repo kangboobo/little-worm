@@ -115,24 +115,33 @@
                     <div class="col-xs-12">
                         <div class="card">
                             <div class="card-body">
-                                <div class="top" >
+                                <div class="top">
                                     <form id="craw_form">
                                         <div class="form-inline">
                                             <div class="form-group">
-                                                <input id = "start_date" name="start_date" class="form-control"type="text" placeholder="开始日期" autocomplete="off">
-                                                <input id = "end_date" name="end_date" class="form-control" type="text" placeholder="结束日期" autocomplete="off">
-                                                <input type="text" class="form-control" name="game_code" id="game_code" placeholder="输入游戏id搜索">
+                                                <input id="start_date" name="start_date" class="form-control"
+                                                       type="text" placeholder="开始日期" autocomplete="off">
+                                                <input id="end_date" name="end_date" class="form-control" type="text"
+                                                       placeholder="结束日期" autocomplete="off">
+                                                <input type="text" class="form-control" name="game_code" id="game_code"
+                                                       placeholder="输入游戏id搜索">
                                                 <button type="button" id="search_comment" class="btn btn-info">&nbsp;&nbsp;搜索&nbsp;&nbsp;</button>
                                                 <button type="button" id="craw_btn" class="btn btn-success">&nbsp;&nbsp;爬取&nbsp;&nbsp;</button>
                                                 <button type="button" id="export_btn" class="btn btn-warning">&nbsp;&nbsp;导出&nbsp;&nbsp;</button>
-                                                <button type="button" id="delete_btn_pre" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">&nbsp;&nbsp;清空&nbsp;&nbsp;</button>
-                                                <a id="download" href="" name="" ></a>
+                                                <button type="button" id="delete_btn_pre" class="btn btn-danger"
+                                                        data-toggle="modal" data-target="#exampleModal"
+                                                        data-whatever="@mdo">&nbsp;&nbsp;清空&nbsp;&nbsp;
+                                                </button>
+                                                <a id="download" href="" name=""></a>
                                             </div>
-                                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                                 aria-labelledby="exampleModalLabel">
                                                 <div class="modal-dialog" role="document">
-                                                    <div class="modal-content"  align="center">
-                                                        <div class="modal-header" >
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                                    <div class="modal-content" align="center">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close"><span aria-hidden="true">×</span>
+                                                            </button>
                                                             <h4 class="modal-title" id="exampleModalLabel">确认框</h4>
                                                         </div>
                                                         <div class="modal-body">
@@ -143,9 +152,13 @@
                                                                 </div>
                                                             </form>
                                                         </div>
-                                                        <div class="modal-footer"  align="center">
-                                                            <button type="button" class="btn btn-success" data-dismiss="modal">取消</button>
-                                                            <button type="button" id="delete_btn" class="btn btn-danger" data-dismiss="modal">确认</button>
+                                                        <div class="modal-footer" align="center">
+                                                            <button type="button" class="btn btn-success"
+                                                                    data-dismiss="modal">取消
+                                                            </button>
+                                                            <button type="button" id="delete_btn" class="btn btn-danger"
+                                                                    data-dismiss="modal">确认
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -153,45 +166,53 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div id="table_refresh"  th:fragment="table_refresh">
-                                <table class="table table-striped table-bordered table-hover"  style='table-layout:fixed;'>
-                                    <thead>
-                                    <tr>
-                                        <th style='width:5%;'>序号</th>
-                                        <th style='width:5%;'>游戏id</th>
-                                        <th style='width:10%;'>用户名</th>
-                                        <th style='width:3%;'>性别</th>
-                                        <th style='width:3%;'>评分</th>
-                                        <th style='width:20%;'>评论内容</th>
-                                        <th style='width:4%;'>点赞数</th>
-                                        <th style='width:4%;'>回复数</th>
-                                        <th style='width:4%;'>浏览数</th>
-                                        <th style='width:8%;'>发表时间</th>
-                                        <th style='width:8%;'>更新时间</th>
-                                        <th style='width:6%;'>游戏时长</th>
-                                        <th style='width:20%;'>置顶回复</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="crawl_comment: ${pageInfo?.list}">
-                                        <td th:text="${crawl_comment.sort}"></td>
-                                        <td th:text="${crawl_comment.gameCode}"></td>
-                                        <td th:text="${crawl_comment.nickname}"  style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></td>
-                                        <td th:text="${crawl_comment.sex}"></td>
-                                        <td th:text="${crawl_comment.score}"></td>
-                                        <td th:text="${crawl_comment.content}" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></td>
-                                        <td th:text="${crawl_comment.likeCount}"></td>
-                                        <td th:text="${crawl_comment.replyCount}"></td>
-                                        <td th:text="${crawl_comment.viewCount}"></td>
-                                        <td th:text="${crawl_comment.createTimeStr}"></td>
-                                        <td th:text="${crawl_comment.updateTimeStr}"></td>
-                                        <td th:text="${crawl_comment.playDuration}"></td>
-                                        <td th:text="${crawl_comment.topReply}" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                    <!-- 分页容器： 显示分页按钮-->
-                                    <div id="Paginator" style="text-align: center"> <ul id="pageLimit"></ul> </div>
+                                <div id="table_refresh" th:fragment="table_refresh">
+                                    <table class="table table-striped table-bordered table-hover"
+                                           style='table-layout:fixed;'>
+                                        <thead>
+                                        <tr>
+                                            <th style='width:4%;'>序号</th>
+                                            <th style='width:5%;'>游戏id</th>
+                                            <th style='width:10%;'>用户名</th>
+                                            <th style='width:3%;'>性别</th>
+                                            <th style='width:3%;'>评分</th>
+                                            <th style='width:21%;'>评论内容</th>
+                                            <th style='width:4%;'>点赞数</th>
+                                            <th style='width:4%;'>回复数</th>
+                                            <th style='width:4%;'>浏览数</th>
+                                            <th style='width:8%;'>发表时间</th>
+                                            <th style='width:8%;'>更新时间</th>
+                                            <th style='width:6%;'>游戏时长(秒)</th>
+                                            <th style='width:20%;'>置顶回复</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="crawl_comment: ${pageInfo?.list}">
+                                            <td th:text="${crawl_comment.sort}"></td>
+                                            <td th:text="${crawl_comment.gameCode}"></td>
+                                            <td th:text="${crawl_comment.nickname}"
+                                                style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></td>
+                                            <td th:text="${crawl_comment.sex}"></td>
+                                            <td th:text="${crawl_comment.score}"></td>
+                                            <td th:text="${crawl_comment.content}"
+                                                style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></td>
+                                            <td th:text="${crawl_comment.likeCount}"></td>
+                                            <td th:text="${crawl_comment.replyCount}"></td>
+                                            <td th:text="${crawl_comment.viewCount}"></td>
+                                            <td th:text="${crawl_comment.createTimeStr}"></td>
+                                            <td th:text="${crawl_comment.updateTimeStr}"></td>
+                                            <td th:text="${crawl_comment.playDuration}"></td>
+                                            <td th:text="${crawl_comment.topReply}"
+                                                style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <div  style="display:inline-block;">共<span id="total_page" th:text="${total_page}"></span>页
+                                    </div>
+                                </div>
+                                <!-- 分页容器： 显示分页按钮-->
+                                <div id="Paginator" style="text-align: center">
+                                    <ul id="pageLimit"></ul>
                                 </div>
                             </div>
                         </div>
@@ -266,40 +287,39 @@
 
         });
     }
+
     // 日期选择器
     DatePicker("#start_date", "#end_date");
 
     // 搜索按钮事件
     $('#search_comment').click(function () {
         var gameCode = $("#game_code").val();
-        if(gameCode == null || gameCode == "" || gameCode == undefined){
-            alert("游戏id不能为空");
-            return
-        }
+        // if (gameCode == null || gameCode == "" || gameCode == undefined) {
+        //     alert("游戏id不能为空");
+        //     return
+        // }
         // 装载局部刷新返回的页面
-        var url = '/xiaomi_comment_list?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
+        var url = '/xiaomi_comment_list?game_code=' + $("#game_code").val() + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
         $('#table_refresh').load(url);
     })
 
     // 爬取按钮事件
     $('#craw_btn').click(function () {
         var gameCode = $("#game_code").val();
-        if(gameCode == null || gameCode == "" || gameCode == undefined){
+        if (gameCode == null || gameCode == "" || gameCode == undefined) {
             alert("游戏id不能为空");
             return
         }
-        var url = '/xiaomi_crawl?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
+        var url = '/xiaomi_crawl?game_code=' + $("#game_code").val() + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
         $.ajax({
             url: url,
             type: 'get',
-            data: {
-
-            },
+            data: {},
             success: function (data) {
                 alert("爬取成功");
             },
-            error:function(jqXHR){
-                aler("请求失败："+ jqXHR.status);
+            error: function (jqXHR) {
+                aler("请求失败：" + jqXHR.status);
             }
         })
     })
@@ -307,13 +327,13 @@
     // 导出按钮事件
     $('#export_btn').click(function () {
         var gameCode = $("#game_code").val();
-        if(gameCode == null || gameCode == "" || gameCode == undefined){
+        if (gameCode == null || gameCode == "" || gameCode == undefined) {
             alert("游戏id不能为空");
             return
         }
 
-        var hrefs = '/xiaomi_export?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
-        $('#download').attr('href',hrefs);
+        var hrefs = '/xiaomi_export?game_code=' + $("#game_code").val() + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
+        $('#download').attr('href', hrefs);
         $("#download").append("<span></span>");
         $("#download span").click();
     })
@@ -330,18 +350,16 @@
         //     alert("游戏id不能为空");
         //     return
         // }
-        var url = '/xiaomi_delete?game_code=' + $("#game_code").val() + '&start_date=' +$("#start_date").val() + '&end_date=' +$("#end_date").val();
+        var url = '/xiaomi_delete?game_code=' + $("#game_code").val() + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
         $.ajax({
             url: url,
             type: 'post',
-            data: {
-
-            },
+            data: {},
             success: function (data) {
                 alert("清空数据成功");
             },
-            error:function(jqXHR){
-                aler("清空数据失败："+ jqXHR.status);
+            error: function (jqXHR) {
+                aler("清空数据失败：" + jqXHR.status);
             }
         })
     })
@@ -350,18 +368,31 @@
     $('#pageLimit').bootstrapPaginator({
         currentPage: 1,
         totalPages: 10,
-        size:"normal",
+        size: "normal",
         bootstrapMajorVersion: 3,
-        alignment:"right",
-        numberOfPages:10,
+        alignment: "right",
+        numberOfPages: 10,
         itemTexts: function (type, page, current) {
             switch (type) {
-                case "first": return "首页";
-                case "prev": return "上一页";
-                case "next": return "下一页";
-                case "last": return "末页";
-                case "page": return page;
+                case "first":
+                    return "首页";
+                case "prev":
+                    return "上一页";
+                case "next":
+                    return "下一页";
+                case "last":
+                    return "末页";
+                case "page":
+                    return page;
             }
+        },
+        onPageClicked: function (event, originalEvent, type, page) {//为操作按钮绑定click事件。
+            //回调函数的参数：event, originalEvent, type,page。
+            currPage = page; // 注意currPage的作用域
+            totalPages =24;
+            // 装载局部刷新返回的页面
+            var url = '/xiaomi_comment_list?page_num=' + page + '&game_code=' + $("#game_code").val() + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
+            $('#table_refresh').load(url);
         }
     });
 

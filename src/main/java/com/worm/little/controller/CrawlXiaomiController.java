@@ -56,9 +56,11 @@ public class CrawlXiaomiController {
      * @return
      */
     @RequestMapping(value = "/xiaomi_comment_list", method = RequestMethod.GET)
-    public Object getGameCommentList(@RequestParam(value = "game_code", required = true) String gameCode,
+    public Object getGameCommentList(@RequestParam(value = "game_code", required = false) String gameCode,
                                      @RequestParam(value = "start_date", required = false) String startDate,
                                      @RequestParam(value = "end_date", required = false) String endDate,
+                                     @RequestParam(value = "page_num", defaultValue = "1", required = false) Integer pageNum,
+                                     @RequestParam(value = "page_size", defaultValue = "20", required = false) Integer pageSize,
                                      Model model,
                                      HttpServletResponse response,
                                      HttpServletRequest request) {
@@ -74,9 +76,10 @@ public class CrawlXiaomiController {
         if (StringUtils.isNotEmpty(endDate)) {
             param.put("endDate", endDate);
         }
-        PageInfo<CrawlCommentXiaomi> pageInfo = crawlXiaomiService.getGameCommentList(param);
+        PageInfo<CrawlCommentXiaomi> pageInfo = crawlXiaomiService.getGameCommentList(param, pageNum, pageSize);
         //放在请求域中
         model.addAttribute("pageInfo", pageInfo);
+        model.addAttribute("total_page", pageInfo.getPages());
         return "xiaomi_comment::table_refresh";
     }
 

@@ -120,7 +120,12 @@
     <if test="endDate != null and endDate != ''">
         and update_time &lt;=  #{endDate,jdbcType=VARCHAR}
     </if>
-    order by sort desc
+        <if test="gameCode != null">
+            order by sort desc
+        </if>
+        <if test="gameCode == null">
+            order by id desc
+        </if>
     </select>
 
     <delete id="deleteCommentByParam" parameterType="java.util.Map">
