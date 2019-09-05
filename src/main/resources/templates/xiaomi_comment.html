@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
 
 <head>
     <title>小虫虫爬虫系统</title>
@@ -127,7 +127,8 @@
                                                        placeholder="输入游戏ID搜索">
                                                 <input type="text" class="form-control" name="keyword" id="keyword"
                                                        placeholder="输入评论内容搜索">
-                                                <button type="button" id="search_comment" class="btn btn-info">&nbsp;&nbsp;搜索&nbsp;&nbsp;</button>
+                                                <button type="button" id="search_comment" class="btn btn-info">&nbsp;&nbsp;搜索&nbsp;&nbsp;
+                                                </button>
                                                 <button type="button" id="craw_btn" class="btn btn-success">&nbsp;&nbsp;爬取&nbsp;&nbsp;</button>
                                                 <button type="button" id="export_btn" class="btn btn-warning">&nbsp;&nbsp;导出&nbsp;&nbsp;</button>
                                                 <button type="button" id="delete_btn_pre" class="btn btn-danger"
@@ -168,7 +169,7 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div id="table_refresh" th:fragment="table_refresh">
+                                <div id="table_refresh">
                                     <table class="table table-striped table-bordered table-hover"
                                            style='table-layout:fixed;'>
                                         <thead>
@@ -188,28 +189,11 @@
                                             <th style='width:20%;'>置顶回复</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <tr th:each="crawl_comment: ${pageInfo?.list}">
-                                            <td th:text="${crawl_comment.sort}"></td>
-                                            <td th:text="${crawl_comment.gameCode}"></td>
-                                            <td th:text="${crawl_comment.nickname}"
-                                                style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></td>
-                                            <td th:text="${crawl_comment.sex}"></td>
-                                            <td th:text="${crawl_comment.score}"></td>
-                                            <td th:text="${crawl_comment.content}"
-                                                style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></td>
-                                            <td th:text="${crawl_comment.likeCount}"></td>
-                                            <td th:text="${crawl_comment.replyCount}"></td>
-                                            <td th:text="${crawl_comment.viewCount}"></td>
-                                            <td th:text="${crawl_comment.createTimeStr}"></td>
-                                            <td th:text="${crawl_comment.updateTimeStr}"></td>
-                                            <td th:text="${crawl_comment.playDuration}"></td>
-                                            <td th:text="${crawl_comment.topReply}"
-                                                style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></td>
-                                        </tr>
+                                        <tbody id="table_body">
+                                        <!-- 表格内容由ajax请求结果动态填充-->
                                         </tbody>
                                     </table>
-                                    <div  style="display:inline-block;">共<span id="total_page" th:text="${total_page}"></span>页
+                                    <div style="display:inline-block;" id="pageInfoTxt">
                                     </div>
                                 </div>
                                 <!-- 分页容器： 显示分页按钮-->
@@ -253,6 +237,9 @@
 </body>
 
 <script type="text/javascript">
+    // 日期选择器
+    DatePicker("#start_date", "#end_date");
+
     function DatePicker(beginSelector, endSelector) {
         $(beginSelector).datetimepicker(
             {
@@ -270,7 +257,6 @@
                 $(endSelector).datetimepicker('setStartDate', null);
             }
         });
-
         $(endSelector).datetimepicker(
             {
                 language: "zh-CN",
@@ -290,20 +276,92 @@
         });
     }
 
-    // 日期选择器
-    DatePicker("#start_date", "#end_date");
-
     // 搜索按钮事件
     $('#search_comment').click(function () {
-        var gameCode = $("#game_code").val();
-        // if (gameCode == null || gameCode == "" || gameCode == undefined) {
-        //     alert("游戏id不能为空");
-        //     return
-        // }
-        // 装载局部刷新返回的页面
-        var url = '/xiaomi_comment_list?game_code=' + $("#game_code").val() + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val()+ '&keyword=' + $("#keyword").val();
-        $('#table_refresh').load(url);
-    })
+            getPage(1);
+        }
+    )
+
+    // 分页查询方法
+    function getPage(pageNum) {
+        var gameCode = $("#game_code").val(); //游戏ID
+        var startDate = $("#start_date").val(); // 开始日期
+        var endDate = $("#end_date").val(); // 结束日期
+        var keyword = $("#keyword").val();// 评论关键词
+        var pageSize = 20;
+        $.ajax({
+            url: "/xiaomi_comment_list",
+            type: "GET",
+            data: {
+                "game_code": gameCode,
+                "start_date": startDate,
+                "end_date": endDate,
+                "keyword": keyword,
+                "page_num": pageNum,
+                "page_size": pageSize,
+            },
+            dataType: "json",
+            success: function (result) {
+                // 清空页面
+                $('#table_body').html("");
+                $("#pageInfoTxt").html("");
+                var totalPages = 10; // 总页数
+                var totalCount = result.size; // 总数据量
+                var data = result.data; // 分页数据
+                var dataJson = eval(data);// 数据转化为json
+                if (data.list != null) {
+                    totalPages = dataJson.pages;
+                    // 动态填充页面数据
+                    var table_body_html = "";
+                    $.each(dataJson.list, function (i, item) {
+                        table_body_html += '<tr>';
+                        table_body_html += '<td>' + item.sort + '</td>';
+                        table_body_html += '<td>' + item.gameCode + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.nickname + '</td>';
+                        table_body_html += '<td>' + item.sex + '</td>';
+                        table_body_html += '<td>' + item.score + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.content + '</td>';
+                        table_body_html += '<td>' + item.likeCount + '</td>';
+                        table_body_html += '<td>' + item.replyCount + '</td>';
+                        table_body_html += '<td>' + item.viewCount + '</td>';
+                        table_body_html += '<td>' + item.createTimeStr + '</td>';
+                        table_body_html += '<td>' + item.updateTimeStr + '</td>';
+                        table_body_html += '<td>' + item.playDuration + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.topReply + '</td>';
+                        table_body_html += '</tr>';
+                    });
+                    $('#table_body').html(table_body_html);
+                    $("#pageInfoTxt").append('<span>' + totalCount+ '条数据 共' + totalPages + '页 </span>');
+                    var options = {
+                        bootstrapMajorVersion: 3, //版本
+                        size: "normal",
+                        currentPage: pageNum, //当前页数
+                        totalPages: totalPages, //总页数
+                        numberOfPages: 10,
+                        itemTexts: function (type, page, current) {
+                            switch (type) {
+                                case "first":
+                                    return "首页";
+                                case "prev":
+                                    return "上一页";
+                                case "next":
+                                    return "下一页";
+                                case "last":
+                                    return "末页";
+                                case "page":
+                                    return page;
+                            }
+                        },
+                        // 点击事件，用于通过Ajax来刷新整个list列表
+                        onPageClicked: function (event, originalEvent, type, page) {
+                            getPage(page);
+                        }
+                    };
+                    $('#pageLimit').bootstrapPaginator(options);
+                }
+            }
+        });
+    };
 
     // 爬取按钮事件
     $('#craw_btn').click(function () {
@@ -365,38 +423,6 @@
             }
         })
     })
-
-    // 分页按钮
-    $('#pageLimit').bootstrapPaginator({
-        currentPage: 1,
-        totalPages: 10,
-        size: "normal",
-        bootstrapMajorVersion: 3,
-        alignment: "right",
-        numberOfPages: 10,
-        itemTexts: function (type, page, current) {
-            switch (type) {
-                case "first":
-                    return "首页";
-                case "prev":
-                    return "上一页";
-                case "next":
-                    return "下一页";
-                case "last":
-                    return "末页";
-                case "page":
-                    return page;
-            }
-        },
-        onPageClicked: function (event, originalEvent, type, page) {//为操作按钮绑定click事件。
-            //回调函数的参数：event, originalEvent, type,page。
-            currPage = page; // 注意currPage的作用域
-            totalPages =24;
-            // 装载局部刷新返回的页面
-            var url = '/xiaomi_comment_list?page_num=' + page + '&game_code=' + $("#game_code").val() + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
-            $('#table_refresh').load(url);
-        }
-    });
 
 </script>
 

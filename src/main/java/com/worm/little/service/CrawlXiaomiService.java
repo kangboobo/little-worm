@@ -10,11 +10,13 @@ import com.worm.little.mapper.CrawlCommentXiaomiMapper;
 import com.worm.little.utils.ExcelUtils;
 import com.worm.little.utils.HttpCilentUtil;
 import com.worm.little.utils.IdWorker;
+import com.worm.little.vo.CrawlCommentXiaomiVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.assertj.core.util.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -54,19 +56,27 @@ public class CrawlXiaomiService {
      * @param param
      * @return
      */
-    public PageInfo<CrawlCommentXiaomi> getGameCommentList(Map<String, Object> param, Integer pageNum, Integer pageSize) {
+    public Map<String,Object> getGameCommentList(Map<String, Object> param, Integer pageNum, Integer pageSize) {
+        Map<String,Object> result = new HashMap<>();
         PageHelper.startPage(pageNum, pageSize);
         List<CrawlCommentXiaomi> crawlCommentXiaomis = crawlCommentXiaomiMapper.getCommentList(param);
-        PageInfo<CrawlCommentXiaomi> pageInfo = new PageInfo<CrawlCommentXiaomi>(crawlCommentXiaomis);
+        PageInfo pageInfo = new PageInfo(crawlCommentXiaomis);
         List<CrawlCommentXiaomi> list = pageInfo.getList();
+        List<CrawlCommentXiaomiVo> resultList = new ArrayList<>(pageSize);
         for (int i = 0; i < list.size(); i++) {
             CrawlCommentXiaomi crawlCommentXiaomi = list.get(i);
             crawlCommentXiaomi.setSort(i + 1 + pageSize * (pageNum - 1));
-            crawlCommentXiaomi.setCreateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
-            crawlCommentXiaomi.setUpdateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
-            crawlCommentXiaomi.setPlayDuration(crawlCommentXiaomi.getPlayDuration() == null ? 0 : crawlCommentXiaomi.getPlayDuration() / 1000);
+            CrawlCommentXiaomiVo vo = new CrawlCommentXiaomiVo();
+            BeanUtils.copyProperties(crawlCommentXiaomi, vo);
+            vo.setCreateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+            vo.setUpdateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
+            vo.setPlayDuration(crawlCommentXiaomi.getPlayDuration() == null ? 0 : crawlCommentXiaomi.getPlayDuration() / 1000);
+            resultList.add(vo);
         }
-        return pageInfo;
+        pageInfo.setList(resultList);
+        result.put("size", crawlCommentXiaomiMapper.getCommentListCount(param));
+        result.put("data", pageInfo);
+        return result;
     }
 
     /**
@@ -104,9 +114,6 @@ public class CrawlXiaomiService {
         for (int i = 0; i < crawlCommentXiaomis.size(); i++) {
             CrawlCommentXiaomi crawlCommentXiaomi = crawlCommentXiaomis.get(i);
             crawlCommentXiaomi.setSort(i + 1);
-            crawlCommentXiaomi.setCreateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
-            crawlCommentXiaomi.setUpdateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
-
             List<String> valueList = new ArrayList<>(13);
             valueList.add(String.valueOf(crawlCommentXiaomi.getSort()));//序号
             valueList.add(crawlCommentXiaomi.getNickname());// 用户名
@@ -117,8 +124,8 @@ public class CrawlXiaomiService {
             valueList.add(crawlCommentXiaomi.getLikeCount() == null ? "" : crawlCommentXiaomi.getLikeCount().toString());//点赞数
             valueList.add(crawlCommentXiaomi.getReplyCount() == null ? "" : crawlCommentXiaomi.getReplyCount().toString());//回复数
             valueList.add(crawlCommentXiaomi.getViewCount() == null ? "" : crawlCommentXiaomi.getViewCount().toString());//浏览数
-            valueList.add(crawlCommentXiaomi.getCreateTimeStr());//发表时间
-            valueList.add(crawlCommentXiaomi.getUpdateTimeStr());//更新时间
+            valueList.add(crawlCommentXiaomi.getCreateTime() == null ? "" : DateFormatUtils.format(crawlCommentXiaomi.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));//发表时间
+            valueList.add(crawlCommentXiaomi.getUpdateTime() == null ? "" : DateFormatUtils.format(crawlCommentXiaomi.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));//更新时间
             valueList.add(crawlCommentXiaomi.getPlayDuration() == null ? "" : String.valueOf(crawlCommentXiaomi.getPlayDuration() / 1000));//游戏时长
             values.add(valueList);
         }

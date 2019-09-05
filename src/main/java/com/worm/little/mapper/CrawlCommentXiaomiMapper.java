@@ -35,6 +35,14 @@ public interface CrawlCommentXiaomiMapper {
     List<CrawlCommentXiaomi> getCommentList(Map param);
 
     /**
+     * 获取评论条数
+     *
+     * @param param
+     * @return
+     */
+    int getCommentListCount(Map param);
+
+    /**
      * 获取存储的最新评论
      *
      * @param param

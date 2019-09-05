@@ -124,7 +124,35 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (content like CONCAT('%',#{keyword, jdbcType=VARCHAR},'%')
-                 or top_reply like CONCAT('%',#{keyword, jdbcType=VARCHAR},'%'))
+            or top_reply like CONCAT('%',#{keyword, jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="gameCode != null">
+            order by sort desc
+        </if>
+        <if test="gameCode == null">
+            order by id desc
+        </if>
+    </select>
+    <!--获取评论条数 -->
+    <select id="getCommentListCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(id)
+        from crawl_comment_xiaomi
+        where 1=1
+        <if test="gameCode != null">
+            and game_code = #{gameCode,jdbcType=BIGINT}
+        </if>
+        <if test="userId != null">
+            and user_id = #{userId,jdbcType=BIGINT}
+        </if>
+        <if test="startDate != null and startDate != ''">
+            and update_time &gt;= #{startDate,jdbcType=VARCHAR}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            and update_time &lt;= #{endDate,jdbcType=VARCHAR}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (content like CONCAT('%',#{keyword, jdbcType=VARCHAR},'%')
+            or top_reply like CONCAT('%',#{keyword, jdbcType=VARCHAR},'%'))
         </if>
         <if test="gameCode != null">
             order by sort desc

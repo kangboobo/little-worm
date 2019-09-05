@@ -1,8 +1,6 @@
 package com.worm.little.controller;
 
 
-import com.github.pagehelper.PageInfo;
-import com.worm.little.entity.CrawlCommentXiaomi;
 import com.worm.little.service.CrawlXiaomiService;
 import com.worm.little.utils.ExportExcelUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,6 +55,7 @@ public class CrawlXiaomiController {
      * @return
      */
     @RequestMapping(value = "/xiaomi_comment_list", method = RequestMethod.GET)
+    @ResponseBody
     public Object getGameCommentList(@RequestParam(value = "game_code", required = false) String gameCode,
                                      @RequestParam(value = "keyword", required = false) String keyword,
                                      @RequestParam(value = "start_date", required = false) String startDate,
@@ -80,11 +80,8 @@ public class CrawlXiaomiController {
         if (StringUtils.isNotEmpty(endDate)) {
             param.put("endDate", endDate);
         }
-        PageInfo<CrawlCommentXiaomi> pageInfo = crawlXiaomiService.getGameCommentList(param, pageNum, pageSize);
-        //放在请求域中
-        model.addAttribute("pageInfo", pageInfo);
-        model.addAttribute("total_page", pageInfo.getPages());
-        return "xiaomi_comment::table_refresh";
+        Map<String,Object> result = crawlXiaomiService.getGameCommentList(param, pageNum, pageSize);
+        return result;
     }
 
     /**
