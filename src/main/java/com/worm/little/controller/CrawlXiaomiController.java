@@ -57,6 +57,7 @@ public class CrawlXiaomiController {
      */
     @RequestMapping(value = "/xiaomi_comment_list", method = RequestMethod.GET)
     public Object getGameCommentList(@RequestParam(value = "game_code", required = false) String gameCode,
+                                     @RequestParam(value = "keyword", required = false) String keyword,
                                      @RequestParam(value = "start_date", required = false) String startDate,
                                      @RequestParam(value = "end_date", required = false) String endDate,
                                      @RequestParam(value = "page_num", defaultValue = "1", required = false) Integer pageNum,
@@ -69,6 +70,9 @@ public class CrawlXiaomiController {
         param.put("userId", userId);
         if (StringUtils.isNotEmpty(gameCode)) {
             param.put("gameCode", gameCode.trim());
+        }
+        if (StringUtils.isNotEmpty(keyword)) {
+            param.put("keyword", keyword.trim());
         }
         if (StringUtils.isNotEmpty(startDate)) {
             param.put("startDate", startDate);

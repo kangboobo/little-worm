@@ -80,8 +80,10 @@
         ) values
         <foreach collection="list" item="it" separator=",">
             (
-            #{it.id,jdbcType=BIGINT}, #{it.userId,jdbcType=BIGINT}, #{it.gameCode,jdbcType=INTEGER}, #{it.sort,jdbcType=INTEGER},
-            #{it.viewpointId,jdbcType=VARCHAR}, #{it.uuid,jdbcType=INTEGER}, #{it.nickname,jdbcType=VARCHAR}, #{it.sex,jdbcType=VARCHAR},
+            #{it.id,jdbcType=BIGINT}, #{it.userId,jdbcType=BIGINT}, #{it.gameCode,jdbcType=INTEGER},
+            #{it.sort,jdbcType=INTEGER},
+            #{it.viewpointId,jdbcType=VARCHAR}, #{it.uuid,jdbcType=INTEGER}, #{it.nickname,jdbcType=VARCHAR},
+            #{it.sex,jdbcType=VARCHAR},
             #{it.score,jdbcType=INTEGER}, #{it.likeCount,jdbcType=INTEGER}, #{it.replyCount,jdbcType=INTEGER},
             #{it.viewCount,jdbcType=INTEGER}, #{it.createTime,jdbcType=TIMESTAMP}, #{it.updateTime,jdbcType=TIMESTAMP},
             #{it.playDuration,jdbcType=BIGINT}, #{it.content,jdbcType=LONGVARCHAR}, #{it.topReply,jdbcType=LONGVARCHAR}
@@ -104,22 +106,26 @@
     </select>
     <!--获取评论-->
     <select id="getCommentList" resultMap="BaseResultMap" parameterType="java.util.Map">
-    select id, user_id, game_code, sort, viewpoint_id, uuid, nickname, sex, score, like_count, reply_count,
-            view_count, create_time, update_time, play_duration, content, top_reply
-    from crawl_comment_xiaomi
-    where 1=1
-    <if test="gameCode != null">
-        and game_code = #{gameCode,jdbcType=BIGINT}
-    </if>
-    <if test="userId != null">
-        and user_id = #{userId,jdbcType=BIGINT}
-    </if>
-    <if test="startDate != null and startDate != ''">
-        and update_time &gt;=  #{startDate,jdbcType=VARCHAR}
-    </if>
-    <if test="endDate != null and endDate != ''">
-        and update_time &lt;=  #{endDate,jdbcType=VARCHAR}
-    </if>
+        select id, user_id, game_code, sort, viewpoint_id, uuid, nickname, sex, score, like_count, reply_count,
+        view_count, create_time, update_time, play_duration, content, top_reply
+        from crawl_comment_xiaomi
+        where 1=1
+        <if test="gameCode != null">
+            and game_code = #{gameCode,jdbcType=BIGINT}
+        </if>
+        <if test="userId != null">
+            and user_id = #{userId,jdbcType=BIGINT}
+        </if>
+        <if test="startDate != null and startDate != ''">
+            and update_time &gt;= #{startDate,jdbcType=VARCHAR}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            and update_time &lt;= #{endDate,jdbcType=VARCHAR}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (content like CONCAT('%',#{keyword, jdbcType=VARCHAR},'%')
+                 or top_reply like CONCAT('%',#{keyword, jdbcType=VARCHAR},'%'))
+        </if>
         <if test="gameCode != null">
             order by sort desc
         </if>
@@ -129,16 +135,16 @@
     </select>
 
     <delete id="deleteCommentByParam" parameterType="java.util.Map">
-    delete from crawl_comment_xiaomi
-    where user_id = #{userId,jdbcType=BIGINT}
+        delete from crawl_comment_xiaomi
+        where user_id = #{userId,jdbcType=BIGINT}
         <if test="gameCode != null">
             and game_code = #{gameCode,jdbcType=BIGINT}
         </if>
         <if test="startDate != null and startDate != ''">
-            and update_time &gt;=  #{startDate,jdbcType=VARCHAR}
+            and update_time &gt;= #{startDate,jdbcType=VARCHAR}
         </if>
         <if test="endDate != null and endDate != ''">
-            and update_time &lt;=  #{endDate,jdbcType=VARCHAR}
+            and update_time &lt;= #{endDate,jdbcType=VARCHAR}
         </if>
     </delete>
 </mapper>

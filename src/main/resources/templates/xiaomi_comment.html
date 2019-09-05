@@ -124,7 +124,9 @@
                                                 <input id="end_date" name="end_date" class="form-control" type="text"
                                                        placeholder="结束日期" autocomplete="off">
                                                 <input type="text" class="form-control" name="game_code" id="game_code"
-                                                       placeholder="输入游戏id搜索">
+                                                       placeholder="输入游戏ID搜索">
+                                                <input type="text" class="form-control" name="keyword" id="keyword"
+                                                       placeholder="输入评论内容搜索">
                                                 <button type="button" id="search_comment" class="btn btn-info">&nbsp;&nbsp;搜索&nbsp;&nbsp;</button>
                                                 <button type="button" id="craw_btn" class="btn btn-success">&nbsp;&nbsp;爬取&nbsp;&nbsp;</button>
                                                 <button type="button" id="export_btn" class="btn btn-warning">&nbsp;&nbsp;导出&nbsp;&nbsp;</button>
@@ -172,7 +174,7 @@
                                         <thead>
                                         <tr>
                                             <th style='width:4%;'>序号</th>
-                                            <th style='width:5%;'>游戏id</th>
+                                            <th style='width:5%;'>游戏ID</th>
                                             <th style='width:10%;'>用户名</th>
                                             <th style='width:3%;'>性别</th>
                                             <th style='width:3%;'>评分</th>
@@ -299,7 +301,7 @@
         //     return
         // }
         // 装载局部刷新返回的页面
-        var url = '/xiaomi_comment_list?game_code=' + $("#game_code").val() + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
+        var url = '/xiaomi_comment_list?game_code=' + $("#game_code").val() + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val()+ '&keyword=' + $("#keyword").val();
         $('#table_refresh').load(url);
     })
 
@@ -307,7 +309,7 @@
     $('#craw_btn').click(function () {
         var gameCode = $("#game_code").val();
         if (gameCode == null || gameCode == "" || gameCode == undefined) {
-            alert("游戏id不能为空");
+            alert("游戏ID不能为空");
             return
         }
         var url = '/xiaomi_crawl?game_code=' + $("#game_code").val() + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
@@ -328,7 +330,7 @@
     $('#export_btn').click(function () {
         var gameCode = $("#game_code").val();
         if (gameCode == null || gameCode == "" || gameCode == undefined) {
-            alert("游戏id不能为空");
+            alert("游戏ID不能为空");
             return
         }
 
