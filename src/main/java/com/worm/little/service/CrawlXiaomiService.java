@@ -58,6 +58,7 @@ public class CrawlXiaomiService {
      */
     public Map<String,Object> getGameCommentList(Map<String, Object> param, Integer pageNum, Integer pageSize) {
         Map<String,Object> result = new HashMap<>();
+        // 分页查询
         PageHelper.startPage(pageNum, pageSize);
         List<CrawlCommentXiaomi> crawlCommentXiaomis = crawlCommentXiaomiMapper.getCommentList(param);
         PageInfo pageInfo = new PageInfo(crawlCommentXiaomis);

@@ -1,14 +1,18 @@
 package com.worm.little.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.worm.little.constans.ResultMsg;
 import com.worm.little.entity.SysUser;
 import com.worm.little.mapper.SysUserMapper;
+import com.worm.little.vo.BaseOut;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,13 +27,32 @@ public class UserService {
     @Autowired
     private SysUserMapper sysUserMapper;
 
-    public List<SysUser> getUserList(String keyword) {
-        List<SysUser> sysUsers = new ArrayList<>();
+    /**
+     * 获取用户列表
+     *
+     * @param keyword 姓名关键词
+     * @return 用户列表数据
+     */
+    public BaseOut getUserList(String keyword, Integer pageNum, Integer pageSize) {
+        BaseOut result = new BaseOut();
+        // 分页查询
+        PageHelper.startPage(pageNum, pageSize);
+        List<SysUser> sysUsers = null;
         if (null != keyword && StringUtils.isNotEmpty(keyword.trim())) {
             sysUsers = sysUserMapper.selectByKeyword(keyword.trim());
-        }else{
+        } else {
             sysUsers = sysUserMapper.selectAll();
         }
-        return sysUsers;
+        PageInfo pageInfo = new PageInfo(sysUsers);
+        /**返回结果*/
+        if (CollectionUtils.isEmpty(sysUsers)) {
+            result.setCode(1);
+            result.setMsg(ResultMsg.NOT_EXISTS_DATA);
+        } else {
+            result.setCode(0);
+            result.setMsg(ResultMsg.SELECT_SUCCESS);
+            result.setPageData(pageInfo);
+        }
+        return result;
     }
 }
