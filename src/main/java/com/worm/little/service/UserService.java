@@ -55,4 +55,23 @@ public class UserService {
         }
         return result;
     }
+
+    /**
+     * 获取用户列表
+     *
+     * @param id 用户id
+     */
+    public BaseOut deleteUserById(Long id) {
+        BaseOut result = new BaseOut();
+        Integer count = sysUserMapper.deleteByPrimaryKey(id);
+        /**返回结果*/
+        if (count != null && count>0) {
+            result.setCode(0);
+            result.setMsg(ResultMsg.DELETE_SUCCESS);
+        } else {
+            result.setCode(1);
+            result.setMsg(ResultMsg.DELETE_FAIL);
+        }
+        return result;
+    }
 }

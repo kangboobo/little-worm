@@ -115,57 +115,69 @@
                             <div class="card-body">
                                 <div class="top">
                                     <form id="search-form">
-                                    <div class="form-inline">
-                                        <input type="text" class="form-control" name="keyword" id="keyword"
-                                               placeholder="输入姓名搜索">
-                                        <button id="search_user" type="button" class="btn btn-info">&nbsp;&nbsp;搜索&nbsp;&nbsp;</button>
-                                    </div>
+                                        <div class="form-inline title">
+                                            <input type="text" class="form-control" name="keyword" id="keyword"
+                                                   placeholder="输入姓名搜索">
+                                            <button id="search_user" type="button" class="btn btn-info">&nbsp;&nbsp;搜索&nbsp;&nbsp;</button>
+                                            <button type="button" id="add_btn" class="btn btn-success">&nbsp;&nbsp;新增&nbsp;&nbsp;</button>
+                                        </div>
                                     </form>
+                                    <h5 class="page-header"></h5>
                                 </div>
-                                <div id="table_refresh"  th:fragment="table_refresh">
-                                <table class="table table-striped table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th>序号</th>
-                                        <th>姓名</th>
-                                        <th>用户ID</th>
-                                        <th>用户角色</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="sys_user: ${sys_users}">
-                                        <td th:text="${sys_userStat.index+1}"></td>
-                                        <td th:text="${sys_user.userName}"></td>
-                                        <th th:text="${sys_user.userId}"></th>
-                                        <th th:text="${sys_user.role}"></th>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                <div id="table_refresh">
+                                    <table class="table table-striped table-bordered table-condensed">
+                                        <thead>
+                                        <tr>
+                                            <th style='width:10%;'>序号</th>
+                                            <th style='width:25%;'>用户名</th>
+                                            <th style='width:20%;'>用户ID</th>
+                                            <th style='width:25%;'>用户角色</th>
+                                            <th style='width:20%;'>操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="table_body">
+                                        <!-- 表格内容由ajax请求结果动态填充-->
+                                        </tbody>
+                                    </table>
+                                    <div style="display:inline-block;" id="pageInfoTxt">
+                                    </div>
+                                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                         aria-labelledby="exampleModalLabel">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content" align="center">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close"><span aria-hidden="true">×</span>
+                                                    </button>
+                                                    <h4 class="modal-title" id="exampleModalLabel">确认框</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form>
+                                                        <div class="form-group" align="center">
+                                                            <label for="message-text"
+                                                                   class="control-label">确定要删除该用户？</label>
+                                                            <span>(同时会清空该用户爬取的所有数据)</span>
+                                                        </div>
+                                                    </form>
+                                                    <div name="dataId" id="dataId">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer" align="center">
+                                                    <button type="button" class="btn btn-success"
+                                                            data-dismiss="modal">取消
+                                                    </button>
+
+                                                    <button type="button" id="delete_btn" class="btn btn-danger"
+                                                            data-dismiss="modal">确认
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
-                                    <ul class="pagination">
-                                        <li class="paginate_button previous disabled" id="DataTables_Table_0_previous">
-                                            <a href="#" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0">上一页</a>
-                                        </li>
-                                        <li class="paginate_button active"><a href="#"
-                                                                              aria-controls="DataTables_Table_0"
-                                                                              data-dt-idx="1" tabindex="0">1</a></li>
-                                        <li class="paginate_button "><a href="#" aria-controls="DataTables_Table_0"
-                                                                        data-dt-idx="2" tabindex="0">2</a></li>
-                                        <li class="paginate_button "><a href="#" aria-controls="DataTables_Table_0"
-                                                                        data-dt-idx="3" tabindex="0">3</a></li>
-                                        <li class="paginate_button "><a href="#" aria-controls="DataTables_Table_0"
-                                                                        data-dt-idx="4" tabindex="0">4</a></li>
-                                        <li class="paginate_button "><a href="#" aria-controls="DataTables_Table_0"
-                                                                        data-dt-idx="5" tabindex="0">5</a></li>
-                                        <li class="paginate_button "><a href="#" aria-controls="DataTables_Table_0"
-                                                                        data-dt-idx="6" tabindex="0">6</a></li>
-                                        <li class="paginate_button next" id="DataTables_Table_0_next"><a href="#"
-                                                                                                         aria-controls="DataTables_Table_0"
-                                                                                                         data-dt-idx="7"
-                                                                                                         tabindex="0">下一页</a>
-                                        </li>
-                                    </ul>
+                                <!-- 分页容器： 显示分页按钮-->
+                                <div id="Paginator" style="text-align: center">
+                                    <ul id="pageLimit"></ul>
                                 </div>
                             </div>
                         </div>
@@ -196,14 +208,108 @@
 <script type="text/javascript" src="dist/lib/js/ace/theme-github.js"></script>
 <!-- Javascript -->
 <script type="text/javascript" src="dist/js/app.js"></script>
+<script type="text/javascript" src="dist/lib/js/bootstrap-paginator.js"></script>
 </body>
 
 <script type="text/javascript">
     // 搜索按钮事件
     $('#search_user').click(function () {
-        // 装载局部刷新返回的页面
-        var url = '/user_manage_list?keyword=' + $("#keyword").val() ;
-        $('#table_refresh').load(url);
+            getPage(1);
+        }
+    );
+
+    // 分页查询方法
+    function getPage(pageNum) {
+        var keyword = $("#keyword").val();// 关键词
+        var pageSize = 20;
+        $.ajax({
+            url: "/user_manage_list",
+            type: "GET",
+            data: {
+                "keyword": keyword,
+                "page_num": pageNum,
+                "page_size": pageSize,
+            },
+            dataType: "json",
+            success: function (result) {
+                // 清空页面
+                $('#table_body').html("");
+                $("#pageInfoTxt").html("");
+                var totalPages = 10; // 总页数
+                var totalCount = result.pageData.size; // 总数据量
+                var data = result.pageData; // 分页数据
+                if (data.list != null) {
+                    totalPages = data.pages;
+                    // 动态填充页面数据
+                    var table_body_html = "";
+                    $.each(data.list, function (i, item) {
+                        table_body_html += '<tr>';
+                        table_body_html += '<td>' + (i + 1) + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.userName + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.userId + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.role + '</td>';
+                        table_body_html += '<td> <button type="button" id="edit_btn" class="btn btn-warning btn-xs">&nbsp;&nbsp;编辑&nbsp;&nbsp;</button>\n' +
+                            '                    <button type="button" id="delete_btn_pre" onclick="delete_values(' + item.id + ')" class="btn btn-danger btn-xs"\n' +
+                            '                                                        data-toggle="modal" data-target="#exampleModal"\n' +
+                            '                                                        data-whatever="@mdo">&nbsp;&nbsp;删除&nbsp;&nbsp;\n' +
+                            '                     </button></td>';
+                        table_body_html += '</tr>';
+                    });
+                    $('#table_body').html(table_body_html);
+                    $("#pageInfoTxt").append('<span>' + totalCount + '条数据 共' + totalPages + '页 </span>');
+                    var options = {
+                        bootstrapMajorVersion: 3, //版本
+                        size: "normal",
+                        currentPage: pageNum, //当前页数
+                        totalPages: totalPages, //总页数
+                        numberOfPages: 10,
+                        itemTexts: function (type, page, current) {
+                            switch (type) {
+                                case "first":
+                                    return "首页";
+                                case "prev":
+                                    return "上一页";
+                                case "next":
+                                    return "下一页";
+                                case "last":
+                                    return "末页";
+                                case "page":
+                                    return page;
+                            }
+                        },
+                        // 点击事件，用于通过Ajax来刷新整个list列表
+                        onPageClicked: function (event, originalEvent, type, page) {
+                            getPage(page);
+                        }
+                    };
+                    $('#pageLimit').bootstrapPaginator(options);
+                }
+            }
+        });
+    };
+
+    // 删除按钮传id到弹框
+    function delete_values(id) {
+        $('#dataId').val(id);
+    }
+
+    // 清空按钮事件
+    $('#delete_btn').click(function () {
+        var id = $("#dataId").val();
+        var url = '/user_delete';
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: {
+                "id": id,
+            },
+            success: function (data) {
+                alert("删除用户成功");
+            },
+            error: function (jqXHR) {
+                alert("删除用户失败：" + jqXHR.status);
+            }
+        })
     })
 </script>
 

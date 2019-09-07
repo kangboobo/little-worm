@@ -7,11 +7,11 @@ import java.util.List;
 
 @Repository
 public interface SysUserMapper {
-    int deleteByPrimaryKey(Integer userId);
+    int deleteByPrimaryKey(Long userId);
 
     int insert(SysUser record);
 
-    SysUser selectByPrimaryKey(Integer userId);
+    SysUser selectByPrimaryKey(Long userId);
 
     List<SysUser> selectAll();
 

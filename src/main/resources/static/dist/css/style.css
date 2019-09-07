@@ -478,9 +478,9 @@ a:hover {
   margin-bottom: -5px; }
 
 .btn {
-  margin-top: 5px;
-  margin-bottom: 5px;
-  border-radius: 1px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  border-radius: 3px;
   border-width: 1px;
   font-family: 'Roboto Condensed', sans-serif; }
 
