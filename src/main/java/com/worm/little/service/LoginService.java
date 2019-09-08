@@ -39,10 +39,10 @@ public class LoginService {
                 } else {
                     loginFlag = true;
                 }
+                map.put("userId", sysUser.getId());
             } else {
                 map.put("msg", "用户不存在!");
             }
-            map.put("userId", sysUser.getId());
         }catch (Exception e){
             logger.error("LoginService login error, userId={}, password={}", userId, password, e);
             map.put("msg", "系统异常，登录失败!");

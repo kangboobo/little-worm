@@ -1,15 +1,13 @@
 package com.worm.little.controller;
 
+import com.worm.little.entity.SysUser;
 import com.worm.little.service.UserService;
 import com.worm.little.vo.BaseOut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,6 +55,42 @@ public class UserController {
     }
 
     /**
+     * 新增用户
+     *
+     * @return
+     */
+    @RequestMapping(value = "/user_add", method = RequestMethod.POST)
+    public Object addUser(@RequestParam(value = "userId", required = false) String userId,
+                          @RequestParam(value = "userName", required = false) String userName,
+                          @RequestParam(value = "password", required = false) String password,
+                          @RequestParam(value = "role", required = false) String role,
+                          HttpServletResponse response,
+                          HttpServletRequest request) {
+        SysUser sysUser = new SysUser();
+        sysUser.setUserId(userId);
+        sysUser.setUserName(userName);
+        sysUser.setPassword(password);
+        sysUser.setRole(role);
+        BaseOut result = userService.insertUser(sysUser);
+        return result;
+    }
+
+    /**
+     * 编辑用户
+     *
+     * @param sysUser
+     * @return
+     */
+    @RequestMapping(value = "/user_edit", method = RequestMethod.POST)
+    public Object updateUser(@RequestBody SysUser sysUser,
+                             HttpServletResponse response,
+                             HttpServletRequest request) {
+
+        BaseOut result = userService.updateUser(sysUser);
+        return result;
+    }
+
+    /**
      * 删除用户
      *
      * @param id
@@ -65,8 +99,8 @@ public class UserController {
     @RequestMapping(value = "/user_delete", method = RequestMethod.POST)
     @ResponseBody
     public Object deleteUserById(@RequestParam(value = "id", required = false) Long id,
-                              HttpServletResponse response,
-                              HttpServletRequest request) {
+                                 HttpServletResponse response,
+                                 HttpServletRequest request) {
 
         BaseOut result = userService.deleteUserById(id);
         return result;

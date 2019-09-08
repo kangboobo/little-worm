@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.worm.little.constans.ResultMsg;
 import com.worm.little.entity.SysUser;
 import com.worm.little.mapper.SysUserMapper;
+import com.worm.little.utils.IdWorker;
 import com.worm.little.vo.BaseOut;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,6 +25,8 @@ import java.util.List;
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    private IdWorker idWorker;
     @Autowired
     private SysUserMapper sysUserMapper;
 
@@ -57,7 +60,47 @@ public class UserService {
     }
 
     /**
-     * 获取用户列表
+     * 新增用户
+     *
+     * @param sysUser
+     */
+    public BaseOut insertUser(SysUser sysUser) {
+        BaseOut result = new BaseOut();
+        sysUser.setId(idWorker.nextId());
+        sysUser.setStatus("1");
+        Integer count = sysUserMapper.insert(sysUser);
+        /**返回结果*/
+        if (count != null && count>0) {
+            result.setCode(0);
+            result.setMsg(ResultMsg.INSERT_SUCCESS);
+        } else {
+            result.setCode(1);
+            result.setMsg(ResultMsg.INSERT_FAIL);
+        }
+        return result;
+    }
+
+    /**
+     * 编辑用户
+     *
+     * @param sysUser
+     */
+    public BaseOut updateUser(SysUser sysUser) {
+        BaseOut result = new BaseOut();
+        Integer count = sysUserMapper.updateByPrimaryKey(sysUser);
+        /**返回结果*/
+        if (count != null && count>0) {
+            result.setCode(0);
+            result.setMsg(ResultMsg.UPDATE_SUCCESS);
+        } else {
+            result.setCode(1);
+            result.setMsg(ResultMsg.UPDATE_FAIL);
+        }
+        return result;
+    }
+
+    /**
+     * 删除用户
      *
      * @param id 用户id
      */

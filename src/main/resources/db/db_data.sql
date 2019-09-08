@@ -1,1 +1,1 @@
-INSERT INTO `sys_user` VALUES (1, 'admin', '111111', '1');
+INSERT INTO `sys_user` VALUES (1, 'admin','系统管理员', '111111', '1','系统管理员');

@@ -23,6 +23,7 @@
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <!-- 引入阿里巴巴图标 -->
     <link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_1379614_7kwlk8an72d.css">
+    <link rel="stylesheet" type="text/css" href="dist/lib/css/bootstrapValidator.min.css">
 </head>
 
 <body class="flat-blue">
@@ -119,7 +120,10 @@
                                             <input type="text" class="form-control" name="keyword" id="keyword"
                                                    placeholder="输入姓名搜索">
                                             <button id="search_user" type="button" class="btn btn-info">&nbsp;&nbsp;搜索&nbsp;&nbsp;</button>
-                                            <button type="button" id="add_btn" class="btn btn-success">&nbsp;&nbsp;新增&nbsp;&nbsp;</button>
+                                            <button type="button" id="add_btn" class="btn btn-success"
+                                                    data-toggle="modal" data-target="#addUserModal"
+                                                    data-whatever="@mdo">&nbsp;&nbsp;新增&nbsp;&nbsp;
+                                            </button>
                                         </div>
                                     </form>
                                     <h5 class="page-header"></h5>
@@ -141,7 +145,7 @@
                                     </table>
                                     <div style="display:inline-block;" id="pageInfoTxt">
                                     </div>
-                                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                    <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog"
                                          aria-labelledby="exampleModalLabel">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content" align="center">
@@ -179,6 +183,121 @@
                                 <div id="Paginator" style="text-align: center">
                                     <ul id="pageLimit"></ul>
                                 </div>
+                                <!-- 新增用户form表单-->
+                                <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog"
+                                     aria-labelledby="exampleModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">×</span>
+                                                </button>
+                                                <h4 class="modal-title" id="addUserModalTitle">新增用户</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="add_user_form" class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label for="add_user_id"
+                                                               class="col-sm-2 control-label">用户ID</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="add_user_id"
+                                                                   placeholder="请输入登录ID">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="add_user_name"
+                                                               class="col-sm-2 control-label">用户名</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="add_user_name"
+                                                                   placeholder="请输入用户名">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="add_user_password"
+                                                               class="col-sm-2 control-label">密码</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="password" class="form-control"
+                                                                   id="add_user_password" placeholder="请输入密码">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="add_user_role"
+                                                               class="col-sm-2 control-label">用户角色</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="add_user_role"
+                                                                   placeholder="请输入用户角色">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer" align="center">
+                                                        <button type="button" class="btn btn-success"
+                                                                data-dismiss="modal">取消
+                                                        </button>
+                                                        <button type="button" id="add_user_btn" class="btn btn-danger"
+                                                                data-dismiss="modal">确认
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 编辑用户form表单-->
+                                <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog"
+                                     aria-labelledby="exampleModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">×</span>
+                                                </button>
+                                                <h4 class="modal-title" id="editUserModalTitle">编辑用户</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="edit_user_form" class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label for="edit_user_id"
+                                                               class="col-sm-2 control-label">用户ID</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="edit_user_id"
+                                                                   disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="edit_user_name"
+                                                               class="col-sm-2 control-label">用户名</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="edit_user_name"
+                                                                   placeholder="请输入用户名">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="edit_user_password" class="col-sm-2 control-label">密码</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="password" class="form-control"
+                                                                   id="edit_user_password" placeholder="请输入密码">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="edit_user_role"
+                                                               class="col-sm-2 control-label">用户角色</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="edit_user_role"
+                                                                   placeholder="请输入用户角色">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer" align="center">
+                                                        <button type="button" class="btn btn-success"
+                                                                data-dismiss="modal">取消
+                                                        </button>
+                                                        <button type="button" id="edit_user_btn" class="btn btn-danger"
+                                                                data-dismiss="modal">确认
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -209,6 +328,7 @@
 <!-- Javascript -->
 <script type="text/javascript" src="dist/js/app.js"></script>
 <script type="text/javascript" src="dist/lib/js/bootstrap-paginator.js"></script>
+<script type="text/javascript" src="dist/lib/js/bootstrapValidator.min.js"></script>
 </body>
 
 <script type="text/javascript">
@@ -243,14 +363,17 @@
                     // 动态填充页面数据
                     var table_body_html = "";
                     $.each(data.list, function (i, item) {
+                        var $row = JSON.stringify(item).replace(/\"/g, "'")
                         table_body_html += '<tr>';
                         table_body_html += '<td>' + (i + 1) + '</td>';
+                        table_body_html += '<td>' + item.userId + '</td>';
                         table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.userName + '</td>';
-                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.userId + '</td>';
                         table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.role + '</td>';
-                        table_body_html += '<td> <button type="button" id="edit_btn" class="btn btn-warning btn-xs">&nbsp;&nbsp;编辑&nbsp;&nbsp;</button>\n' +
+                        table_body_html += '<td> <button type="button" id="edit_btn" onclick="edit_values(' + $row + ')" class="btn btn-warning btn-xs"\n' +
+                            '                                                       data-toggle="modal" data-target="#editUserModal"\n' +
+                            '                                                       data-whatever="@mdo">&nbsp;&nbsp;编辑&nbsp;&nbsp;</button>\n' +
                             '                    <button type="button" id="delete_btn_pre" onclick="delete_values(' + item.id + ')" class="btn btn-danger btn-xs"\n' +
-                            '                                                        data-toggle="modal" data-target="#exampleModal"\n' +
+                            '                                                        data-toggle="modal" data-target="#deleteUserModal"\n' +
                             '                                                        data-whatever="@mdo">&nbsp;&nbsp;删除&nbsp;&nbsp;\n' +
                             '                     </button></td>';
                         table_body_html += '</tr>';
@@ -288,7 +411,19 @@
         });
     };
 
+    // 编辑用户传参到弹框
+    $("#editUserModal").modal("hide")
+
+    function edit_values(item) {
+        $('#edit_user_id').val(item.id);
+        $('#edit_user_name').val(item.userName);
+        $('#edit_user_password').val(item.password);
+        $('#edit_user_role').val(item.role);
+    }
+
     // 删除按钮传id到弹框
+    $("#deleteUserModal").modal("hide")
+
     function delete_values(id) {
         $('#dataId').val(id);
     }
@@ -310,7 +445,78 @@
                 alert("删除用户失败：" + jqXHR.status);
             }
         })
-    })
+    });
+
+    // 新增、编辑确认按钮事件
+    $('#add_user_btn').click(function () {
+        /*手动验证表单，当是普通按钮时。*/
+        $('#add_user_form').data('bootstrapValidator').validate();
+        if (!$('#add_user_form').data('bootstrapValidator').isValid()) {
+            alter("1111")
+            return;
+        } else {
+            //通过ajax请求来提交表单，可以灵活控制提交后的操作
+            var userId = $("#add_user_id").val();
+            var userName = $("#add_user_name").val();
+            var password = $("#add_user_password").val();
+            var role = $("#add_user_role").val();
+            $.ajax({
+                url: "/user_add",
+                type: "post",
+                data: {
+                    "userId": userId,
+                    "userName": userName,
+                    "password": password,
+                    "role": role,
+                },
+                success: function (result) {
+                    if (result == "true") {
+                        $('#Modal').modal('hide');
+                    } else {
+                        $("#returnMessage").hide().html('<label class="label label-danger">新增成功!</label>').show(300);
+                    }
+                }, error: function () {
+                    $("#returnMessage").hide().html('<label class="label label-danger">新增失败!</label>').show(300);
+                }
+            })
+        }
+    });
+
+    //输入表单验证
+    $('#add_user_form').bootstrapValidator({
+        message: 'This value is not valid',
+        excluded: [':disabled'],//忽略不验证的项[':disabled', ':hidden', ':not(:visible)']
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        live: 'enabled',
+        fields: {
+            add_user_name: {
+                message: '用户名验证失败',
+                trigger: "change", //监听change动作
+                validators: {
+                    notEmpty: {
+                        message: '用户名不能为空'
+                    }
+                }
+            },
+            add_user_password: {
+                message: '密码验证失败',
+                trigger: "change", //监听change动作
+                validators: {
+                    notEmpty: {
+                        message: '密码不能为空'
+                    },
+                    regexp: {
+                        regexp: /^[a-zA-Z0-9_]+$/,
+                        message: '密码只能包含大小写字母、数字和下划线'
+                    }
+                }
+            }
+        }
+    });
 </script>
 
 </html>
