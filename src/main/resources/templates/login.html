@@ -48,7 +48,7 @@
                             <div class="control">
                                 <div class="form-group">
                                     <input type="text" name="userName" id="userName" class="form-control"
-                                           placeholder="用户名"/>
+                                           placeholder="用户ID"/>
                                 </div>
                             </div>
                             <div class="control">
@@ -106,12 +106,17 @@
         },
         fields: {
             userName: {
-                message: '用户名验证失败',
+                message: '用户ID验证失败',
                 trigger: "change", //监听change动作
                 validators: {
                     notEmpty: {
-                        message: '用户名不能为空'
-                    }
+                        message: '用户ID不能为空'
+                    },
+                    stringLength: {
+                        min: 6,
+                        max: 18,
+                        message: '用户ID长度必须在6到18位之间'
+                    },
                 }
             },
             password: {
@@ -120,6 +125,11 @@
                 validators: {
                     notEmpty: {
                         message: '密码不能为空'
+                    },
+                    stringLength: {
+                        min: 6,
+                        max: 18,
+                        message: '密码长度必须在6到18位之间'
                     },
                     regexp: {
                         regexp: /^[a-zA-Z0-9_]+$/,
