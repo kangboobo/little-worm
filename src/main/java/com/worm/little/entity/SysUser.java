@@ -1,6 +1,7 @@
 package com.worm.little.entity;
 
 public class SysUser {
+
     private Long id;
 
     private String userId;

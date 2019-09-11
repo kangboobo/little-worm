@@ -55,6 +55,18 @@ public class UserController {
     }
 
     /**
+     * 跳转到新增用户页面
+     *
+     * @return
+     */
+    @RequestMapping(value = "/to_add_user", method = RequestMethod.GET)
+    public Object updateUser(HttpServletResponse response,
+                             HttpServletRequest request) {
+
+        return "user_manage_add";
+    }
+
+    /**
      * 新增用户
      *
      * @return
@@ -76,6 +88,20 @@ public class UserController {
     }
 
     /**
+     * 跳转到编辑用户页面
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/to_edit_user", method = RequestMethod.GET)
+    public Object updateUser(@RequestParam(value = "userId", required = false) String userId,
+                             HttpServletResponse response,
+                             HttpServletRequest request) {
+
+        return "user_manage_edit";
+    }
+
+    /**
      * 编辑用户
      *
      * @param sysUser
@@ -93,16 +119,16 @@ public class UserController {
     /**
      * 删除用户
      *
-     * @param id
+     * @param userId
      * @return
      */
     @RequestMapping(value = "/user_delete", method = RequestMethod.POST)
     @ResponseBody
-    public Object deleteUserById(@RequestParam(value = "id", required = false) Long id,
+    public Object deleteUserById(@RequestParam(value = "userId", required = false) String userId,
                                  HttpServletResponse response,
                                  HttpServletRequest request) {
 
-        BaseOut result = userService.deleteUserById(id);
+        BaseOut result = userService.deleteUserById(userId);
         return result;
     }
 }

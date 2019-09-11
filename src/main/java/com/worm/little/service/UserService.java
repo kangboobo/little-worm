@@ -7,13 +7,16 @@ import com.worm.little.entity.SysUser;
 import com.worm.little.mapper.SysUserMapper;
 import com.worm.little.utils.IdWorker;
 import com.worm.little.vo.BaseOut;
+import com.worm.little.vo.SysUserVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,6 +50,16 @@ public class UserService {
             sysUsers = sysUserMapper.selectAll();
         }
         PageInfo pageInfo = new PageInfo(sysUsers);
+        List<SysUser> list = pageInfo.getList();
+        List<SysUserVo> resultList = new ArrayList<>(pageSize);
+        for (int i = 0; i < list.size(); i++) {
+            SysUser sysUser = list.get(i);
+            SysUserVo sysUserVo = new SysUserVo();
+            BeanUtils.copyProperties(sysUser, sysUserVo);
+            sysUserVo.setId_str(sysUser.getId().toString());
+            resultList.add(sysUserVo);
+        }
+        pageInfo.setList(resultList);
         /**返回结果*/
         if (CollectionUtils.isEmpty(sysUsers)) {
             result.setCode(1);
@@ -102,19 +115,27 @@ public class UserService {
     /**
      * 删除用户
      *
-     * @param id 用户id
+     * @param userId 用户id
      */
-    public BaseOut deleteUserById(Long id) {
+    public BaseOut deleteUserById(String userId) {
         BaseOut result = new BaseOut();
-        Integer count = sysUserMapper.deleteByPrimaryKey(id);
-        /**返回结果*/
-        if (count != null && count>0) {
-            result.setCode(0);
-            result.setMsg(ResultMsg.DELETE_SUCCESS);
-        } else {
+
+        SysUser sysUser = sysUserMapper.selectByUserId(userId);
+        if (sysUser != null){
+            Integer count = sysUserMapper.deleteByPrimaryKey(sysUser.getId());
+            /**返回结果*/
+            if (count != null && count>0) {
+                result.setCode(0);
+                result.setMsg(ResultMsg.DELETE_SUCCESS);
+            } else {
+                result.setCode(1);
+                result.setMsg(ResultMsg.DELETE_FAIL);
+            }
+        }else{
             result.setCode(1);
             result.setMsg(ResultMsg.DELETE_FAIL);
         }
+
         return result;
     }
 }

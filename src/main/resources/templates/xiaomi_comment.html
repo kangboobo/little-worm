@@ -238,9 +238,13 @@
 </body>
 
 <script type="text/javascript">
+    // 页面加载事件
+    $(function() {
+        getPage(1);
+    })
+
     // 日期选择器
     DatePicker("#start_date", "#end_date");
-
     function DatePicker(beginSelector, endSelector) {
         $(beginSelector).datetimepicker(
             {
