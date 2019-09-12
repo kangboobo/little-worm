@@ -12,6 +12,7 @@ public class ResultMsg {
 
     public static final String INSERT_SUCCESS =  "新增成功";
     public static final String INSERT_FAIL =  "新增失败";
+    public static final String EXISTS_USER =  "新增失败：用户ID已存在";
 
     public static final String UPDATE_SUCCESS =  "编辑成功";
     public static final String UPDATE_FAIL =  "编辑失败";

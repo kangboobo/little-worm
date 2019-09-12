@@ -79,11 +79,19 @@ public class UserService {
      */
     public BaseOut insertUser(SysUser sysUser) {
         BaseOut result = new BaseOut();
+        // 检查用户id是否存在
+        SysUser oldSysUser = sysUserMapper.selectByUserId(sysUser.getUserId());
+        if (oldSysUser != null) {
+            result.setCode(1);
+            result.setMsg(ResultMsg.EXISTS_USER);
+            return result;
+        }
+
         sysUser.setId(idWorker.nextId());
         sysUser.setStatus("1");
         Integer count = sysUserMapper.insert(sysUser);
         /**返回结果*/
-        if (count != null && count>0) {
+        if (count != null && count > 0) {
             result.setCode(0);
             result.setMsg(ResultMsg.INSERT_SUCCESS);
         } else {
@@ -102,7 +110,7 @@ public class UserService {
         BaseOut result = new BaseOut();
         Integer count = sysUserMapper.updateByPrimaryKey(sysUser);
         /**返回结果*/
-        if (count != null && count>0) {
+        if (count != null && count > 0) {
             result.setCode(0);
             result.setMsg(ResultMsg.UPDATE_SUCCESS);
         } else {
@@ -121,17 +129,17 @@ public class UserService {
         BaseOut result = new BaseOut();
 
         SysUser sysUser = sysUserMapper.selectByUserId(userId);
-        if (sysUser != null){
+        if (sysUser != null) {
             Integer count = sysUserMapper.deleteByPrimaryKey(sysUser.getId());
             /**返回结果*/
-            if (count != null && count>0) {
+            if (count != null && count > 0) {
                 result.setCode(0);
                 result.setMsg(ResultMsg.DELETE_SUCCESS);
             } else {
                 result.setCode(1);
                 result.setMsg(ResultMsg.DELETE_FAIL);
             }
-        }else{
+        } else {
             result.setCode(1);
             result.setMsg(ResultMsg.DELETE_FAIL);
         }
