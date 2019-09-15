@@ -117,7 +117,9 @@ public class LoginService {
                     map.put("crawlTime" + i, beforeTime + " 天前");
                 }
                 map.put("msg" + i, "爬取《" + userCrawlRecord.getGameCode() + "》，共爬取数据" + userCrawlRecord.getCrawlCount() + "条");
-
+                if(i>5){
+                    break;
+                }
             }
         }
         map.put("userCrawlRecords", null);
