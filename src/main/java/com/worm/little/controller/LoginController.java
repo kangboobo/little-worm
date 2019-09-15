@@ -45,8 +45,8 @@ public class LoginController {
      * @return
      */
     @RequestMapping("/index")
-    public String home(Model model, HttpServletResponse response) {
-        model.addAttribute("name", "simonsfan");
+    public String home(Map<String, Object> map, Model model, HttpServletResponse response) {
+        loginService.index(map);
         return "index";
     }
 

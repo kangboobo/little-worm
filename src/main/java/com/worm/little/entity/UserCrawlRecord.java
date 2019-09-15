@@ -3,9 +3,9 @@ package com.worm.little.entity;
 import java.util.Date;
 
 public class UserCrawlRecord {
-    private Integer id;
+    private Long id;
 
-    private Integer userId;
+    private Long userId;
 
     private Integer systemCode;
 
@@ -15,19 +15,19 @@ public class UserCrawlRecord {
 
     private Date createTime;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

@@ -6,7 +6,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.worm.little.constans.Constans;
 import com.worm.little.entity.CrawlCommentXiaomi;
+import com.worm.little.entity.UserCrawlRecord;
 import com.worm.little.mapper.CrawlCommentXiaomiMapper;
+import com.worm.little.mapper.UserCrawlRecordMapper;
 import com.worm.little.utils.ExcelUtils;
 import com.worm.little.utils.HttpCilentUtil;
 import com.worm.little.utils.IdWorker;
@@ -46,6 +48,9 @@ public class CrawlXiaomiService {
 
     @Autowired
     private CrawlCommentXiaomiMapper crawlCommentXiaomiMapper;
+
+    @Autowired
+    private UserCrawlRecordMapper userCrawlRecordMapper;
 
     @Value("${export.file.path}")
     private String filePath;
@@ -185,6 +190,16 @@ public class CrawlXiaomiService {
                     crawlCommentXiaomis.get(i).setSort(sort++);
                 }
                 crawlCommentXiaomiMapper.batchInsert(crawlCommentXiaomis);
+
+                // 保存爬取记录
+                UserCrawlRecord userCrawlRecord = new UserCrawlRecord();
+                userCrawlRecord.setId(idWorker.nextId());
+                userCrawlRecord.setUserId(userId);
+                userCrawlRecord.setSystemCode(1);
+                userCrawlRecord.setGameCode(gameCode.intValue());
+                userCrawlRecord.setCrawlCount(crawlCommentXiaomis.size());
+                userCrawlRecord.setCreateTime(new Date());
+                userCrawlRecordMapper.insert(userCrawlRecord);
             }
         } catch (Exception e) {
             logger.error("小米游戏中心爬取异常， userId={}, gameCode={}", userId, gameCode, e);

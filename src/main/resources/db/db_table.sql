@@ -30,8 +30,7 @@ CREATE TABLE `user_crawl_record`
     `game_code`   int(10)    NOT NULL COMMENT '游戏id',
     `crawl_count` int(10)  DEFAULT NULL COMMENT '爬取条数',
     `create_time` datetime DEFAULT NULL COMMENT '爬取时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_user_crawl_record` (`user_id`, `system_code`, `game_code`)
+    PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   ROW_FORMAT = DYNAMIC COMMENT ='用户爬取记录表';
