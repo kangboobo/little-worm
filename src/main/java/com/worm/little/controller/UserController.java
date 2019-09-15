@@ -84,7 +84,7 @@ public class UserController {
         sysUser.setPassword(password);
         sysUser.setRole(role);
         BaseOut result = userService.insertUser(sysUser);
-        return result;
+        return "user_manage";
     }
 
     /**
