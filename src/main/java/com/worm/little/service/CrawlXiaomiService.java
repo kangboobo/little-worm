@@ -39,6 +39,7 @@ public class CrawlXiaomiService {
 
     private static final String URL = "https://game.xiaomi.com/api/getViewpointList";
     private static final Integer PAGE_SIZE = 100;
+    private static final Integer BATCH_COMMIT_SIZE = 100;
 
     @Autowired
     private IdWorker idWorker;
@@ -189,7 +190,11 @@ public class CrawlXiaomiService {
                 for (int i = 0; i < crawlCommentXiaomis.size(); i++) {
                     crawlCommentXiaomis.get(i).setSort(sort++);
                 }
-                crawlCommentXiaomiMapper.batchInsert(crawlCommentXiaomis);
+                // 分批保存数据
+                List<List<CrawlCommentXiaomi>> partition = com.google.common.collect.Lists.partition(crawlCommentXiaomis, BATCH_COMMIT_SIZE);
+                partition.forEach(p -> {
+                    crawlCommentXiaomiMapper.batchInsert(p);
+                });
 
                 // 保存爬取记录
                 UserCrawlRecord userCrawlRecord = new UserCrawlRecord();

@@ -36,7 +36,7 @@ public class HttpCilentUtil {
             if (responseEntity != null) {
                 responseContent = EntityUtils.toString(responseEntity);
                 logger.info("http请求响应内容长度为:" + responseEntity.getContentLength());
-                logger.info("http请求响应内容为:" + responseContent);
+                // logger.info("http请求响应内容为:" + responseContent);
             }
         } catch (Exception e) {
             logger.error("http请求失败 !!! url={}", url, e);
