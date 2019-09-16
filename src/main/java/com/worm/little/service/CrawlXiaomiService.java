@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -62,8 +63,8 @@ public class CrawlXiaomiService {
      * @param param
      * @return
      */
-    public Map<String,Object> getGameCommentList(Map<String, Object> param, Integer pageNum, Integer pageSize) {
-        Map<String,Object> result = new HashMap<>();
+    public Map<String, Object> getGameCommentList(Map<String, Object> param, Integer pageNum, Integer pageSize) {
+        Map<String, Object> result = new HashMap<>();
         // 分页查询
         PageHelper.startPage(pageNum, pageSize);
         List<CrawlCommentXiaomi> crawlCommentXiaomis = crawlCommentXiaomiMapper.getCommentList(param);
@@ -163,7 +164,7 @@ public class CrawlXiaomiService {
      * @param gameCode
      * @return
      */
-    public Object gameCommentCrawl(Long userId, Long gameCode) {
+    public Object gameCommentCrawl(Long userId, Long gameCode, String startDate, String endDate) {
         // 组织请求参数
         StringBuffer params = new StringBuffer();
         try {
@@ -181,7 +182,7 @@ public class CrawlXiaomiService {
 
             // 循环爬取每页数据
             List<CrawlCommentXiaomi> crawlCommentXiaomis = new ArrayList<>();
-            this.gameCommentCrawl(crawlCommentXiaomis, userId, gameCode, lastViewpointId);
+            this.gameCommentCrawl(crawlCommentXiaomis, userId, gameCode, lastViewpointId, startDate, endDate);
 
             // 爬取结果不为空时保存到数据库
             if (!CollectionUtils.isEmpty(crawlCommentXiaomis)) {
@@ -221,7 +222,7 @@ public class CrawlXiaomiService {
      * @param gameCode
      * @param lastViewpointId
      */
-    private void gameCommentCrawl(List<CrawlCommentXiaomi> crawlCommentXiaomis, Long userId, Long gameCode, String lastViewpointId) {
+    private void gameCommentCrawl(List<CrawlCommentXiaomi> crawlCommentXiaomis, Long userId, Long gameCode, String lastViewpointId, String startDate, String endDate) throws Exception {
         Integer totalPageNum = 1;
         for (int pageNum = 1; pageNum <= totalPageNum; pageNum++) {
             String url = this.getHttpRequestParams(URL, pageNum, PAGE_SIZE, gameCode);
@@ -253,6 +254,21 @@ public class CrawlXiaomiService {
                         Integer viewCount = viewpoint.getInteger("viewCount");
                         Date createTime = viewpoint.getDate("createTime");
                         Date updateTime = viewpoint.getDate("updateTime");
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                        // 更新时间晚于截至时间的跳过
+                        if(!StringUtils.isEmpty(endDate)) {
+                            Date endTime = sdf.parse(endDate);
+                            if (updateTime.after(endTime)) {
+                                continue;
+                            }
+                        }
+                        // 更新时间早于开始时间时爬取结束
+                        if(!StringUtils.isEmpty(startDate)) {
+                            Date startTime = sdf.parse(startDate);
+                            if (updateTime.before(startTime)) {
+                                break;
+                            }
+                        }
                         Long playDuration = viewpoint.getLong("playDuration");
                         CrawlCommentXiaomi crawlCommentXiaomi = new CrawlCommentXiaomi();
                         crawlCommentXiaomi.setId(idWorker.nextId());
