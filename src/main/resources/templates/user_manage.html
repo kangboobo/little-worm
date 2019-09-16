@@ -92,7 +92,7 @@
                                 <div class="panel-body">
                                     <ul class="nav navbar-nav">
                                         <li><a href="/user_manage">用户列表</a></li>
-                                        <li><a href="../ui-kits/theming.html">用户爬取记录</a></li>
+                                        <!--<li><a href="#">用户爬取记录</a></li>-->
                                     </ul>
                                 </div>
                             </div>
@@ -256,8 +256,7 @@
                         table_body_html += '<td>' + item.userId + '</td>';
                         table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.userName + '</td>';
                         table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.role + '</td>';
-                        table_body_html += '<td> <a type="button" id="edit_btn" class="btn btn-warning btn-xs" href="/to_edit_user?' + item.userId + '">&nbsp;&nbsp;编辑&nbsp;&nbsp;</a>' +
-                            '                    <button type="button" id="delete_btn_pre" onclick="delete_values(\'' + item.userId + '\')" class="btn btn-danger btn-xs"\n' +
+                        table_body_html += '<td> <button type="button" id="delete_btn_pre" onclick="delete_values(\'' + item.userId + '\')" class="btn btn-danger btn-xs"\n' +
                             '                                                        data-toggle="modal" data-target="#deleteUserModal"\n' +
                             '                                                        data-whatever="@mdo">&nbsp;&nbsp;删除&nbsp;&nbsp;\n' +
                             '                     </button></td>';
