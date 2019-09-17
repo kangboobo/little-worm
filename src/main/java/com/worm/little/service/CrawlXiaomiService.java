@@ -224,7 +224,11 @@ public class CrawlXiaomiService {
      */
     private void gameCommentCrawl(List<CrawlCommentXiaomi> crawlCommentXiaomis, Long userId, Long gameCode, String lastViewpointId, String startDate, String endDate) throws Exception {
         Integer totalPageNum = 1;
+        boolean isBreak = false;
         for (int pageNum = 1; pageNum <= totalPageNum; pageNum++) {
+            if(isBreak){
+                break;
+            }
             String url = this.getHttpRequestParams(URL, pageNum, PAGE_SIZE, gameCode);
             String pageResponseContent = httpCilentUtil.doGet(url);
             JSONObject pageJson = JSONObject.parseObject(pageResponseContent);// 解析响应json
@@ -266,6 +270,7 @@ public class CrawlXiaomiService {
                         if(!StringUtils.isEmpty(startDate)) {
                             Date startTime = sdf.parse(startDate);
                             if (updateTime.before(startTime)) {
+                                isBreak = true;
                                 break;
                             }
                         }
