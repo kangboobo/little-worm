@@ -252,9 +252,9 @@
                 autoclose: 1,
                 startView: 2,
                 minView: 0,
-                format: "yyyy-mm-dd HH:mm",
+                format: "yyyy-mm-dd hh:ii:ss",
                 clearBtn: true,
-                todayBtn: true
+                minuteStep:5
             }).on('changeDate', function (ev) {
             if (ev.date) {
                 $(endSelector).datetimepicker('setStartDate', new Date(ev.date.valueOf()))
@@ -268,9 +268,9 @@
                 autoclose: 1,
                 startView: 2,
                 minView: 0,
-                format: "yyyy-mm-dd HH:mm",
+                format: "yyyy-mm-dd hh:ii:ss",
                 clearBtn: true,
-                todayBtn: true
+                minuteStep:5
             }).on('changeDate', function (ev) {
             if (ev.date) {
                 $(beginSelector).datetimepicker('setEndDate', new Date(ev.date.valueOf()))
