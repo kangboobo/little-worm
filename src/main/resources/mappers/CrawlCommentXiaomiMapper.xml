@@ -155,12 +155,6 @@
             and (content like CONCAT('%',#{keyword, jdbcType=VARCHAR},'%')
             or top_reply like CONCAT('%',#{keyword, jdbcType=VARCHAR},'%'))
         </if>
-        <if test="gameCode != null">
-            order by sort desc
-        </if>
-        <if test="gameCode == null">
-            order by id desc
-        </if>
     </select>
 
     <delete id="deleteCommentByParam" parameterType="java.util.Map">

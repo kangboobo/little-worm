@@ -174,10 +174,8 @@ public class CrawlXiaomiService {
             param.put("gameCode", gameCode);
             CrawlCommentXiaomi lastlCommentXiaomi = crawlCommentXiaomiMapper.getLastComment(param);
             String lastViewpointId = null;
-            Integer sort = 1;
             if (null != lastlCommentXiaomi) {
                 lastViewpointId = lastlCommentXiaomi.getViewpointId();
-                sort = lastlCommentXiaomi.getSort() + 1;
             }
 
             // 循环爬取每页数据
@@ -267,6 +265,7 @@ public class CrawlXiaomiService {
                         crawlCommentXiaomi.setId(idWorker.nextId());
                         crawlCommentXiaomi.setUserId(userId);
                         crawlCommentXiaomi.setGameCode(gameCode);
+                        crawlCommentXiaomi.setSort(i + 1);
                         crawlCommentXiaomi.setViewpointId(viewpointId);
                         crawlCommentXiaomi.setUuid(uuid);
                         crawlCommentXiaomi.setNickname(StringUtils.isNotEmpty(nickname) ? nickname : "匿名用户");
