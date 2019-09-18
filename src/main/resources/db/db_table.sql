@@ -57,8 +57,8 @@ CREATE TABLE `crawl_comment_xiaomi`
     `top_reply`     text         DEFAULT NULL COMMENT '置顶回复',
     `play_duration` bigint(20)   DEFAULT NULL COMMENT '游戏时长：单位毫秒',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_comment_xiaomi` (`user_id`, `game_code`, `sort`),
-    KEY `idx_comment_xiaomi` (`viewpoint_id`)
+    KEY `idx_user_game_code` (`user_id`, `game_code`),
+    KEY `idx_viewpoint_id` (`viewpoint_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   ROW_FORMAT = DYNAMIC COMMENT ='小米游戏中心评论数据表';

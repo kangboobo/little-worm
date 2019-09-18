@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.xml.ws.http.HTTPException;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -64,6 +65,7 @@ public class CrawlXiaomiService {
      * @return
      */
     public Map<String, Object> getGameCommentList(Map<String, Object> param, Integer pageNum, Integer pageSize) {
+        logger.info("小米游戏中心评论数据查询， userId={}, gameCode={}", param.get("userId"), param.get("gameCode"));
         Map<String, Object> result = new HashMap<>();
         // 分页查询
         PageHelper.startPage(pageNum, pageSize);
@@ -94,6 +96,7 @@ public class CrawlXiaomiService {
      * @throws Exception
      */
     public File exportComment(Map<String, Object> param) throws Exception {
+        logger.info("小米游戏中心评论数据导出， userId={}, gameCode={}", param.get("userId"), param.get("gameCode"));
         String gameCode = (String) param.get("gameCode");
         List<CrawlCommentXiaomi> crawlCommentXiaomis = crawlCommentXiaomiMapper.getCommentList(param);
         if (CollectionUtils.isEmpty(crawlCommentXiaomis)) {
@@ -146,6 +149,7 @@ public class CrawlXiaomiService {
      * @return
      */
     public Map deleteComment(Map<String, Object> param) {
+        logger.info("小米游戏中心评论数据清空， userId={}, gameCode={}", param.get("userId"), param.get("gameCode"));
         Map resultMap = new HashMap();
         int deleteCount = crawlCommentXiaomiMapper.deleteCommentByParam(param);
         if (deleteCount > 0) {
@@ -164,6 +168,7 @@ public class CrawlXiaomiService {
      * @return
      */
     public Object gameCommentCrawl(Long userId, Long gameCode, String startDate, String endDate) {
+        logger.info("小米游戏中心爬取开始， userId={}, gameCode={}", userId, gameCode);
         // 组织请求参数
         StringBuffer params = new StringBuffer();
         try {
@@ -192,8 +197,10 @@ public class CrawlXiaomiService {
             userCrawlRecordMapper.insert(userCrawlRecord);
         } catch (Exception e) {
             logger.error("小米游戏中心爬取异常， userId={}, gameCode={}", userId, gameCode, e);
+            throw new HTTPException(500);
         }
 
+        logger.info("小米游戏中心爬取完成， userId={}, gameCode={}", userId, gameCode);
         return null;
     }
 
