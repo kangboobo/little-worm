@@ -39,7 +39,7 @@ public class CrawlXiaomiService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String URL = "https://game.xiaomi.com/api/getViewpointList";
-    private static final Integer PAGE_SIZE = 100;
+    private static final Integer PAGE_SIZE = 500;
     private static final Integer BATCH_COMMIT_SIZE = 100;
 
     @Autowired
@@ -182,31 +182,17 @@ public class CrawlXiaomiService {
 
             // 循环爬取每页数据
             List<CrawlCommentXiaomi> crawlCommentXiaomis = new ArrayList<>();
-            this.gameCommentCrawl(crawlCommentXiaomis, userId, gameCode, lastViewpointId, startDate, endDate);
+            Integer totalCount = this.gameCommentCrawl(crawlCommentXiaomis, userId, gameCode, lastViewpointId, startDate, endDate);
 
-            // 爬取结果不为空时保存到数据库
-            if (!CollectionUtils.isEmpty(crawlCommentXiaomis)) {
-                // 重新排序：按时间正序
-                Collections.reverse(crawlCommentXiaomis);
-                for (int i = 0; i < crawlCommentXiaomis.size(); i++) {
-                    crawlCommentXiaomis.get(i).setSort(sort++);
-                }
-                // 分批保存数据
-                List<List<CrawlCommentXiaomi>> partition = com.google.common.collect.Lists.partition(crawlCommentXiaomis, BATCH_COMMIT_SIZE);
-                partition.forEach(p -> {
-                    crawlCommentXiaomiMapper.batchInsert(p);
-                });
-
-                // 保存爬取记录
-                UserCrawlRecord userCrawlRecord = new UserCrawlRecord();
-                userCrawlRecord.setId(idWorker.nextId());
-                userCrawlRecord.setUserId(userId);
-                userCrawlRecord.setSystemCode(1);
-                userCrawlRecord.setGameCode(gameCode.intValue());
-                userCrawlRecord.setCrawlCount(crawlCommentXiaomis.size());
-                userCrawlRecord.setCreateTime(new Date());
-                userCrawlRecordMapper.insert(userCrawlRecord);
-            }
+            // 保存爬取记录
+            UserCrawlRecord userCrawlRecord = new UserCrawlRecord();
+            userCrawlRecord.setId(idWorker.nextId());
+            userCrawlRecord.setUserId(userId);
+            userCrawlRecord.setSystemCode(1);
+            userCrawlRecord.setGameCode(gameCode.intValue());
+            userCrawlRecord.setCrawlCount(totalCount);
+            userCrawlRecord.setCreateTime(new Date());
+            userCrawlRecordMapper.insert(userCrawlRecord);
         } catch (Exception e) {
             logger.error("小米游戏中心爬取异常， userId={}, gameCode={}", userId, gameCode, e);
         }
@@ -222,11 +208,12 @@ public class CrawlXiaomiService {
      * @param gameCode
      * @param lastViewpointId
      */
-    private void gameCommentCrawl(List<CrawlCommentXiaomi> crawlCommentXiaomis, Long userId, Long gameCode, String lastViewpointId, String startDate, String endDate) throws Exception {
+    private Integer gameCommentCrawl(List<CrawlCommentXiaomi> crawlCommentXiaomis, Long userId, Long gameCode, String lastViewpointId, String startDate, String endDate) throws Exception {
+        Integer totalCount = 0;
         Integer totalPageNum = 1;
         boolean isBreak = false;
         for (int pageNum = 1; pageNum <= totalPageNum; pageNum++) {
-            if(isBreak){
+            if (isBreak) {
                 break;
             }
             String url = this.getHttpRequestParams(URL, pageNum, PAGE_SIZE, gameCode);
@@ -246,7 +233,8 @@ public class CrawlXiaomiService {
                         JSONObject userInfo = viewpoint.getJSONObject("userInfo");
                         String viewpointId = viewpoint.getString("viewpointId");
                         if (StringUtils.isNotEmpty(lastViewpointId) && lastViewpointId.equals(viewpointId)) {
-                            return; // 爬取到存储的最新评论后终止爬虫
+                            isBreak = true;
+                            break; // 爬取到存储的最新评论后终止爬虫
                         }
                         Integer uuid = userInfo.getInteger("uuid");
                         String nickname = userInfo.getString("nickname");
@@ -260,14 +248,14 @@ public class CrawlXiaomiService {
                         Date updateTime = viewpoint.getDate("updateTime");
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                         // 更新时间晚于截至时间的跳过
-                        if(!StringUtils.isEmpty(endDate)) {
+                        if (!StringUtils.isEmpty(endDate)) {
                             Date endTime = sdf.parse(endDate);
                             if (updateTime.after(endTime)) {
                                 continue;
                             }
                         }
                         // 更新时间早于开始时间时爬取结束
-                        if(!StringUtils.isEmpty(startDate)) {
+                        if (!StringUtils.isEmpty(startDate)) {
                             Date startTime = sdf.parse(startDate);
                             if (updateTime.before(startTime)) {
                                 isBreak = true;
@@ -316,7 +304,20 @@ public class CrawlXiaomiService {
                     }
                 }
             }
+
+            // 爬取结果不为空时保存到数据库
+            if (!CollectionUtils.isEmpty(crawlCommentXiaomis)) {
+                // 分批保存数据
+                List<List<CrawlCommentXiaomi>> partition = com.google.common.collect.Lists.partition(crawlCommentXiaomis, BATCH_COMMIT_SIZE);
+                partition.forEach(p -> {
+                    crawlCommentXiaomiMapper.batchInsert(p);
+                });
+                totalCount += crawlCommentXiaomis.size();
+                crawlCommentXiaomis.clear();// 保存成功后清空list，避免内存泄漏
+            }
         }
+
+        return totalCount;
     }
 
     /**

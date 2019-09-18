@@ -92,17 +92,18 @@
     </insert>
     <!--获取存储的最新评论-->
     <select id="getLastComment" resultMap="BaseResultMap" parameterType="java.util.Map">
-    select id, user_id, game_code, sort, viewpoint_id, uuid, nickname, sex, score, like_count, reply_count,
+    select *
+    from
+	(
+		select
+			id, user_id, game_code, sort, viewpoint_id, uuid, nickname, sex, score, like_count, reply_count,
             view_count, create_time, update_time, play_duration, content, top_reply
-    from crawl_comment_xiaomi
-    where game_code = #{gameCode,jdbcType=BIGINT}
-    and user_id = #{userId,jdbcType=BIGINT}
-    and sort = (
-      select max(sort)
-      from crawl_comment_xiaomi
-      where game_code = #{gameCode,jdbcType=BIGINT}
-      and user_id = #{userId,jdbcType=BIGINT}
-    )
+		from crawl_comment_xiaomi
+		where game_code =  #{gameCode,jdbcType=BIGINT}
+		and user_id = #{userId,jdbcType=BIGINT}
+		order by update_time desc
+	) as t
+    limit 1
     </select>
     <!--获取评论-->
     <select id="getCommentList" resultMap="BaseResultMap" parameterType="java.util.Map">
@@ -127,7 +128,7 @@
             or top_reply like CONCAT('%',#{keyword, jdbcType=VARCHAR},'%'))
         </if>
         <if test="gameCode != null">
-            order by sort desc
+            order by update_time desc
         </if>
         <if test="gameCode == null">
             order by id desc
