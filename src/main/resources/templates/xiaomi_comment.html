@@ -186,7 +186,7 @@
                                             <th style='width:4%;'>浏览数</th>
                                             <th style='width:8%;'>发表时间</th>
                                             <th style='width:8%;'>更新时间</th>
-                                            <th style='width:6%;'>游戏时长(秒)</th>
+                                            <th style='width:6%;'>游戏时长</th>
                                             <th style='width:20%;'>置顶回复</th>
                                         </tr>
                                         </thead>
@@ -331,7 +331,7 @@
                         table_body_html += '<td>' + item.viewCount + '</td>';
                         table_body_html += '<td>' + item.createTimeStr + '</td>';
                         table_body_html += '<td>' + item.updateTimeStr + '</td>';
-                        table_body_html += '<td>' + item.playDuration + '</td>';
+                        table_body_html += '<td>' + item.playDurationStr + '</td>';
                         table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.topReply + '</td>';
                         table_body_html += '</tr>';
                     });
@@ -375,15 +375,18 @@
             alert("游戏ID不能为空");
             return
         }
-        var url = '/xiaomi_crawl?game_code=' + $("#game_code").val() + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
+        var url = '/xiaomi_crawl?game_code=' + gameCode + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
+        $("#craw_btn").attr("disabled", true);
         $.ajax({
             url: url,
             type: 'get',
             data: {},
             success: function (data) {
+                $("#craw_btn").removeAttr("disabled");
                 alert("爬取成功");
             },
             error: function (jqXHR) {
+                $("#craw_btn").removeAttr("disabled");
                 aler("请求失败：" + jqXHR.status);
             }
         })
@@ -397,7 +400,7 @@
             return
         }
 
-        var hrefs = '/xiaomi_export?game_code=' + $("#game_code").val() + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
+        var hrefs = '/xiaomi_export?game_code=' + gameCode + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
         $('#download').attr('href', hrefs);
         $("#download").append("<span></span>");
         $("#download span").click();
@@ -415,7 +418,7 @@
         //     alert("游戏id不能为空");
         //     return
         // }
-        var url = '/xiaomi_delete?game_code=' + $("#game_code").val() + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
+        var url = '/xiaomi_delete?game_code=' + gameCode + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
         $.ajax({
             url: url,
             type: 'post',

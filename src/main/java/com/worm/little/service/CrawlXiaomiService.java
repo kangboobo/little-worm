@@ -78,7 +78,6 @@ public class CrawlXiaomiService {
             BeanUtils.copyProperties(crawlCommentXiaomi, vo);
             vo.setCreateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
             vo.setUpdateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
-            vo.setPlayDuration(crawlCommentXiaomi.getPlayDuration() == null ? 0 : crawlCommentXiaomi.getPlayDuration() / 1000);
             resultList.add(vo);
         }
         pageInfo.setList(resultList);
@@ -118,7 +117,7 @@ public class CrawlXiaomiService {
         titles.add("浏览数");
         titles.add("发表时间");
         titles.add("更新时间");
-        titles.add("游戏时长（秒）");
+        titles.add("游戏时长");
         for (int i = 0; i < crawlCommentXiaomis.size(); i++) {
             CrawlCommentXiaomi crawlCommentXiaomi = crawlCommentXiaomis.get(i);
             crawlCommentXiaomi.setSort(i + 1);
@@ -134,7 +133,7 @@ public class CrawlXiaomiService {
             valueList.add(crawlCommentXiaomi.getViewCount() == null ? "" : crawlCommentXiaomi.getViewCount().toString());//浏览数
             valueList.add(crawlCommentXiaomi.getCreateTime() == null ? "" : DateFormatUtils.format(crawlCommentXiaomi.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));//发表时间
             valueList.add(crawlCommentXiaomi.getUpdateTime() == null ? "" : DateFormatUtils.format(crawlCommentXiaomi.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));//更新时间
-            valueList.add(crawlCommentXiaomi.getPlayDuration() == null ? "" : String.valueOf(crawlCommentXiaomi.getPlayDuration() / 1000));//游戏时长
+            valueList.add(crawlCommentXiaomi.getPlayDurationStr() == null ? "" : crawlCommentXiaomi.getPlayDurationStr());//游戏时长
             values.add(valueList);
         }
         return ExcelUtils.exportDynamicExcelFile(titles, values, gameCode, "sheet1", filePath);

@@ -1,5 +1,7 @@
 package com.worm.little.entity;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Date;
 
 public class CrawlCommentXiaomi {
@@ -36,6 +38,8 @@ public class CrawlCommentXiaomi {
     private String content;
 
     private String topReply;
+
+    private String playDurationStr;
 
     public Long getId() {
         return id;
@@ -173,4 +177,29 @@ public class CrawlCommentXiaomi {
         this.topReply = topReply == null ? null : topReply.trim();
     }
 
+    public String getPlayDurationStr() {
+        if (!StringUtils.isEmpty(this.playDurationStr)) {
+            return playDurationStr;
+        }
+
+        if (this.playDuration == null) {
+            this.playDurationStr = "--";
+        } else {
+            Long second = this.playDuration / 1000;
+            if (second < 60) {
+                this.playDurationStr = second + "秒";
+            } else if (second < 3600) {
+                Long minute = second / 60;
+                this.playDurationStr = minute + "分钟";
+            } else {
+                Long minute = second / 3600;
+                this.playDurationStr = minute + "小时";
+            }
+        }
+        return playDurationStr;
+    }
+
+    public void setPlayDurationStr(String playDurationStr) {
+        this.playDurationStr = playDurationStr;
+    }
 }
