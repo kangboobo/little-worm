@@ -277,7 +277,8 @@ public class CrawlXiaomiService {
                         JSONObject viewpoint = (JSONObject) viewpoints.get(i);
                         JSONObject userInfo = viewpoint.getJSONObject("userInfo");
                         String viewpointId = viewpoint.getString("viewpointId");
-                        if (StringUtils.isNotEmpty(lastViewpointId) && lastViewpointId.equals(viewpointId)) {
+                        if (StringUtils.isEmpty(startDate) && StringUtils.isEmpty(endDate)
+                                && StringUtils.isNotEmpty(lastViewpointId) && lastViewpointId.equals(viewpointId)) {
                             isBreak = true;
                             break; // 爬取到存储的最新评论后终止爬虫
                         }
