@@ -36,6 +36,7 @@
     <select id="selectAll" resultMap="BaseResultMap">
     select *
     from sys_user
+    where id != 1
   </select>
     <!--根据用户id获取用户信息-->
     <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -47,6 +48,7 @@
     <select id="selectByKeyword" resultMap="BaseResultMap" parameterType="java.lang.String">
     select *
     from sys_user
-    where user_name like concat('%', #{userId,jdbcType=VARCHAR}, '%')
+    where id != 1
+    and user_name like concat('%', #{userId,jdbcType=VARCHAR}, '%')
   </select>
 </mapper>

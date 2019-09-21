@@ -26,8 +26,9 @@ CREATE TABLE `user_crawl_record`
 (
     `id`          bigint(20) NOT NULL COMMENT '主键',
     `user_id`     bigint(20) NOT NULL COMMENT '用户id',
-    `system_code` int(10)    NOT NULL COMMENT '游戏id',
+    `system_code` int(10)    NOT NULL COMMENT '平台id',
     `game_code`   int(10)    NOT NULL COMMENT '游戏id',
+    `game_name`   varchar(100)  DEFAULT NULL COMMENT '游戏名称',
     `crawl_count` int(10)  DEFAULT NULL COMMENT '爬取条数',
     `create_time` datetime DEFAULT NULL COMMENT '爬取时间',
     PRIMARY KEY (`id`)

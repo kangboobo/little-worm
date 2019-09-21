@@ -11,6 +11,8 @@ public class UserCrawlRecord {
 
     private Integer gameCode;
 
+    private String gameName;
+
     private Integer crawlCount;
 
     private Date createTime;
@@ -45,6 +47,14 @@ public class UserCrawlRecord {
 
     public void setGameCode(Integer gameCode) {
         this.gameCode = gameCode;
+    }
+
+    public String getGameName() {
+        return gameName;
+    }
+
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
     }
 
     public Integer getCrawlCount() {

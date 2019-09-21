@@ -10,4 +10,6 @@ public interface UserCrawlRecordMapper {
     int insert(UserCrawlRecord record);
 
     List<UserCrawlRecord> selectAll();
+
+    List<UserCrawlRecord> selectGameInfoByCode(Integer gameCode);
 }

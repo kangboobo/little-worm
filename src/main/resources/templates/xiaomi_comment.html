@@ -176,18 +176,18 @@
                                         <thead>
                                         <tr>
                                             <th style='width:4%;'>序号</th>
-                                            <th style='width:5%;'>游戏ID</th>
-                                            <th style='width:10%;'>用户名</th>
+                                            <th style='width:4%;'>游戏ID</th>
+                                            <th style='width:7%;'>游戏名称</th>
+                                            <th style='width:8%;'>用户名</th>
                                             <th style='width:3%;'>性别</th>
                                             <th style='width:3%;'>评分</th>
-                                            <th style='width:21%;'>评论内容</th>
+                                            <th style='width:25%;'>评论内容</th>
                                             <th style='width:4%;'>点赞数</th>
                                             <th style='width:4%;'>回复数</th>
                                             <th style='width:4%;'>浏览数</th>
-                                            <th style='width:8%;'>发表时间</th>
                                             <th style='width:8%;'>更新时间</th>
-                                            <th style='width:6%;'>游戏时长</th>
-                                            <th style='width:20%;'>置顶回复</th>
+                                            <th style='width:4%;'>游戏时长</th>
+                                            <th style='width:22%;'>置顶回复</th>
                                         </tr>
                                         </thead>
                                         <tbody id="table_body">
@@ -322,6 +322,7 @@
                         table_body_html += '<tr>';
                         table_body_html += '<td>' + item.sort + '</td>';
                         table_body_html += '<td>' + item.gameCode + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.gameName + '</td>';
                         table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.nickname + '</td>';
                         table_body_html += '<td>' + item.sex + '</td>';
                         table_body_html += '<td>' + item.score + '</td>';
@@ -329,7 +330,6 @@
                         table_body_html += '<td>' + item.likeCount + '</td>';
                         table_body_html += '<td>' + item.replyCount + '</td>';
                         table_body_html += '<td>' + item.viewCount + '</td>';
-                        table_body_html += '<td>' + item.createTimeStr + '</td>';
                         table_body_html += '<td>' + item.updateTimeStr + '</td>';
                         table_body_html += '<td>' + item.playDurationStr + '</td>';
                         table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.topReply + '</td>';

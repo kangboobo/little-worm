@@ -9,7 +9,7 @@ public class CrawlCommentXiaomi {
 
     private Long userId;
 
-    private Long gameCode;
+    private Integer gameCode;
 
     private Integer sort;
 
@@ -57,11 +57,11 @@ public class CrawlCommentXiaomi {
         this.userId = userId;
     }
 
-    public Long getGameCode() {
+    public Integer getGameCode() {
         return gameCode;
     }
 
-    public void setGameCode(Long gameCode) {
+    public void setGameCode(Integer gameCode) {
         this.gameCode = gameCode;
     }
 

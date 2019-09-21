@@ -4,7 +4,7 @@
     <resultMap id="BaseResultMap" type="com.worm.little.entity.CrawlCommentXiaomi">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="user_id" property="userId" jdbcType="BIGINT"/>
-        <result column="game_code" property="gameCode" jdbcType="BIGINT"/>
+        <result column="game_code" property="gameCode" jdbcType="INTEGER"/>
         <result column="sort" property="sort" jdbcType="INTEGER"/>
         <result column="viewpoint_id" property="viewpointId" jdbcType="VARCHAR"/>
         <result column="uuid" property="uuid" jdbcType="INTEGER"/>
@@ -41,7 +41,7 @@
     <update id="updateByPrimaryKey" parameterType="com.worm.little.entity.CrawlCommentXiaomi">
     update crawl_comment_xiaomi
     set user_id = #{userId,jdbcType=BIGINT},
-      game_code = #{gameCode,jdbcType=BIGINT},
+      game_code = #{gameCode,jdbcType=INTEGER},
       sort = #{sort,jdbcType=INTEGER},
       viewpoint_id = #{viewpointId,jdbcType=VARCHAR},
       uuid = #{uuid,jdbcType=INTEGER},
@@ -140,7 +140,7 @@
         from crawl_comment_xiaomi
         where 1=1
         <if test="gameCode != null">
-            and game_code = #{gameCode,jdbcType=BIGINT}
+            and game_code = #{gameCode,jdbcType=INTEGER}
         </if>
         <if test="userId != null">
             and user_id = #{userId,jdbcType=BIGINT}
@@ -161,7 +161,7 @@
         delete from crawl_comment_xiaomi
         where user_id = #{userId,jdbcType=BIGINT}
         <if test="gameCode != null">
-            and game_code = #{gameCode,jdbcType=BIGINT}
+            and game_code = #{gameCode,jdbcType=INTEGER}
         </if>
         <if test="startDate != null and startDate != ''">
             and update_time &gt;= #{startDate,jdbcType=VARCHAR}

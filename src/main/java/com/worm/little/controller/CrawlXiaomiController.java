@@ -80,7 +80,7 @@ public class CrawlXiaomiController {
         if (StringUtils.isNotEmpty(endDate)) {
             param.put("endDate", endDate);
         }
-        Map<String,Object> result = crawlXiaomiService.getGameCommentList(param, pageNum, pageSize);
+        Map<String, Object> result = crawlXiaomiService.getGameCommentList(param, pageNum, pageSize);
         return result;
     }
 
@@ -101,7 +101,7 @@ public class CrawlXiaomiController {
                                    HttpServletResponse response,
                                    HttpServletRequest request) {
         Long userId = (Long) request.getSession().getAttribute("userId");// 从该用户的session中获取用户id
-        return crawlXiaomiService.gameCommentCrawl(userId, Long.parseLong(gameCode), startDate, endDate);
+        return crawlXiaomiService.gameCommentCrawl(userId, Integer.parseInt(gameCode), startDate, endDate);
     }
 
     /**
