@@ -6,17 +6,23 @@
         <result column="user_id" property="userId" jdbcType="BIGINT"/>
         <result column="system_code" property="systemCode" jdbcType="INTEGER"/>
         <result column="game_code" property="gameCode" jdbcType="INTEGER"/>
+        <result column="game_name" property="gameName" jdbcType="VARCHAR"/>
         <result column="crawl_count" property="crawlCount" jdbcType="INTEGER"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
     </resultMap>
     <insert id="insert" parameterType="com.worm.little.entity.UserCrawlRecord">
     insert into user_crawl_record (id, user_id, system_code, game_code,
-      crawl_count, create_time)
+      game_name, crawl_count, create_time)
     values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{systemCode,jdbcType=INTEGER}, #{gameCode,jdbcType=INTEGER},
-      #{crawlCount,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+      #{gameName,jdbcType=VARCHAR}, #{crawlCount,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
     <select id="selectAll" resultMap="BaseResultMap">
-    select id, user_id, system_code, game_code, crawl_count, create_time
+    select id, user_id, system_code, game_code, game_name, crawl_count, create_time
     from user_crawl_record
+  </select>
+    <select id="selectGameInfoByCode" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select id, user_id, system_code, game_code, game_name, crawl_count, create_time
+    from user_crawl_record
+    where game_code = #{gameCode,jdbcType=INTEGER}
   </select>
 </mapper>

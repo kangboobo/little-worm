@@ -5,6 +5,7 @@ import com.worm.little.entity.UserCrawlRecord;
 import com.worm.little.mapper.CrawlCommentXiaomiMapper;
 import com.worm.little.mapper.SysUserMapper;
 import com.worm.little.mapper.UserCrawlRecordMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,8 +117,9 @@ public class LoginService {
                     beforeTime = beforeTime / (3600 * 24);
                     map.put("crawlTime" + i, beforeTime + " 天前");
                 }
-                map.put("msg" + i, "爬取《" + userCrawlRecord.getGameCode() + "》，共爬取数据" + userCrawlRecord.getCrawlCount() + "条");
-                if(i>5){
+                String gameName = StringUtils.isNotEmpty(userCrawlRecord.getGameName()) ? userCrawlRecord.getGameName() : userCrawlRecord.getGameCode() + "";
+                map.put("msg" + i, "爬取《" + gameName + "》，共爬取数据" + userCrawlRecord.getCrawlCount() + "条");
+                if (i > 5) {
                     break;
                 }
             }

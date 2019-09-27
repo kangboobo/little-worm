@@ -16,6 +16,9 @@ import com.worm.little.vo.CrawlCommentXiaomiVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.assertj.core.util.Lists;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -40,7 +43,8 @@ public class CrawlXiaomiService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String URL = "https://game.xiaomi.com/api/getViewpointList";
-    private static final Integer PAGE_SIZE = 500;
+    private static final String INFO_URL = "https://game.xiaomi.com/game/";
+    private static final Integer PAGE_SIZE = 430;
     private static final Integer BATCH_COMMIT_SIZE = 100;
 
     @Autowired
@@ -72,6 +76,17 @@ public class CrawlXiaomiService {
         List<CrawlCommentXiaomi> crawlCommentXiaomis = crawlCommentXiaomiMapper.getCommentList(param);
         PageInfo pageInfo = new PageInfo(crawlCommentXiaomis);
         List<CrawlCommentXiaomi> list = pageInfo.getList();
+        if(CollectionUtils.isEmpty(list)){
+            return result;
+        }
+
+        // 查询游戏信息
+        List<UserCrawlRecord> userCrawlRecords = userCrawlRecordMapper.selectGameInfoByCode(list.get(0).getGameCode());
+        String gameName = null;
+        if(!CollectionUtils.isEmpty(userCrawlRecords)){
+            gameName = userCrawlRecords.get(0).getGameName();
+        }
+
         List<CrawlCommentXiaomiVo> resultList = new ArrayList<>(pageSize);
         for (int i = 0; i < list.size(); i++) {
             CrawlCommentXiaomi crawlCommentXiaomi = list.get(i);
@@ -80,6 +95,7 @@ public class CrawlXiaomiService {
             BeanUtils.copyProperties(crawlCommentXiaomi, vo);
             vo.setCreateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
             vo.setUpdateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
+            vo.setGameName(gameName);
             resultList.add(vo);
         }
         pageInfo.setList(resultList);
@@ -100,7 +116,7 @@ public class CrawlXiaomiService {
         String gameCode = (String) param.get("gameCode");
         List<CrawlCommentXiaomi> crawlCommentXiaomis = crawlCommentXiaomiMapper.getCommentList(param);
         if (CollectionUtils.isEmpty(crawlCommentXiaomis)) {
-
+            return null;
         }
         // 限制导出最大条数
         if (crawlCommentXiaomis.size() > Constans.EXPORT_COUNT_MAX_DEFAULT) {
@@ -167,7 +183,7 @@ public class CrawlXiaomiService {
      * @param gameCode
      * @return
      */
-    public Object gameCommentCrawl(Long userId, Long gameCode, String startDate, String endDate) {
+    public Object gameCommentCrawl(Long userId, Integer gameCode, String startDate, String endDate) {
         logger.info("小米游戏中心爬取开始， userId={}, gameCode={}", userId, gameCode);
         // 组织请求参数
         StringBuffer params = new StringBuffer();
@@ -181,6 +197,8 @@ public class CrawlXiaomiService {
             if (null != lastlCommentXiaomi) {
                 lastViewpointId = lastlCommentXiaomi.getViewpointId();
             }
+            // 根据游戏code查询游戏信息
+            String gameName = this.getGameInfo(gameCode);
 
             // 循环爬取每页数据
             List<CrawlCommentXiaomi> crawlCommentXiaomis = new ArrayList<>();
@@ -192,6 +210,7 @@ public class CrawlXiaomiService {
             userCrawlRecord.setUserId(userId);
             userCrawlRecord.setSystemCode(1);
             userCrawlRecord.setGameCode(gameCode.intValue());
+            userCrawlRecord.setGameName(gameName);
             userCrawlRecord.setCrawlCount(totalCount);
             userCrawlRecord.setCreateTime(new Date());
             userCrawlRecordMapper.insert(userCrawlRecord);
@@ -205,6 +224,28 @@ public class CrawlXiaomiService {
     }
 
     /**
+     * 根据游戏code查询游戏信息
+     *
+     * @param gameCode
+     */
+    private String getGameInfo(Integer gameCode) {
+        String gameName = null;
+        try {
+            String url = INFO_URL + gameCode;
+            String gameResponseHtml = httpCilentUtil.doGet(url);
+            // 解析HTML
+            Document doc = Jsoup.parse(gameResponseHtml);
+            Elements elements = doc.select("div[class=detail-info]").select("h1[class=game-name]");
+            if(elements != null){
+                gameName = elements.get(0).text();
+            }
+        }catch (Exception e){
+            logger.error("小米游戏中心爬取异常， 根据游戏code查询游戏信息失败，gameCode={}", gameCode, e);
+        }
+        return gameName;
+    }
+
+    /**
      * 循环爬取每页数据并解析
      *
      * @param crawlCommentXiaomis
@@ -212,7 +253,7 @@ public class CrawlXiaomiService {
      * @param gameCode
      * @param lastViewpointId
      */
-    private Integer gameCommentCrawl(List<CrawlCommentXiaomi> crawlCommentXiaomis, Long userId, Long gameCode, String lastViewpointId, String startDate, String endDate) throws Exception {
+    private Integer gameCommentCrawl(List<CrawlCommentXiaomi> crawlCommentXiaomis, Long userId, Integer gameCode, String lastViewpointId, String startDate, String endDate) throws Exception {
         Integer totalCount = 0;
         Integer totalPageNum = 1;
         boolean isBreak = false;
@@ -236,7 +277,8 @@ public class CrawlXiaomiService {
                         JSONObject viewpoint = (JSONObject) viewpoints.get(i);
                         JSONObject userInfo = viewpoint.getJSONObject("userInfo");
                         String viewpointId = viewpoint.getString("viewpointId");
-                        if (StringUtils.isNotEmpty(lastViewpointId) && lastViewpointId.equals(viewpointId)) {
+                        if (StringUtils.isEmpty(startDate) && StringUtils.isEmpty(endDate)
+                                && StringUtils.isNotEmpty(lastViewpointId) && lastViewpointId.equals(viewpointId)) {
                             isBreak = true;
                             break; // 爬取到存储的最新评论后终止爬虫
                         }
@@ -334,7 +376,7 @@ public class CrawlXiaomiService {
      * @param gameCode
      * @return
      */
-    private String getHttpRequestParams(String url, Integer pageNum, Integer pageSize, Long gameCode) {
+    private String getHttpRequestParams(String url, Integer pageNum, Integer pageSize, Integer gameCode) {
         StringBuffer params = new StringBuffer();
         params.append(url).append("?");
         params.append("uuid=0");
