@@ -137,35 +137,6 @@
                                                 </button>
                                                 <a id="download" href="" name=""></a>
                                             </div>
-                                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-                                                 aria-labelledby="exampleModalLabel">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content" align="center">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                    aria-label="Close"><span aria-hidden="true">×</span>
-                                                            </button>
-                                                            <h4 class="modal-title" id="exampleModalLabel">确认框</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <form>
-                                                                <div class="form-group" align="center">
-                                                                    <label for="message-text" class="control-label">确定要清空数据？</label>
-                                                                    <span>(未输入游戏ID时会清空用户爬取的所有数据)</span>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                        <div class="modal-footer" align="center">
-                                                            <button type="button" class="btn btn-success"
-                                                                    data-dismiss="modal">取消
-                                                            </button>
-                                                            <button type="button" id="delete_btn" class="btn btn-danger"
-                                                                    data-dismiss="modal">确认
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             <h5 class="page-header"></h5>
                                         </div>
                                     </form>
@@ -214,6 +185,43 @@
                 href="http://www.kangboobo.com/" target="_blank" title="kangkang">kangkang</a>
         </div>
     </footer>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" align="center">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close"><span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">确认框</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group" align="center">
+                            <label class="control-label">确定要清空数据？</label>
+                            <span>(未输入游戏ID时会清空用户爬取的所有数据)</span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" align="center">
+                    <button type="button" class="btn btn-success"
+                            data-dismiss="modal">取消
+                    </button>
+                    <button type="button" id="delete_btn" class="btn btn-danger"
+                            data-dismiss="modal">确认
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="loadingModal">
+        <div style="width: 200px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 50%;margin-left:-100px;margin-top:-10px">
+            <div class="progress progress-striped active" style="margin-bottom: 0;">
+                <div class="progress-bar" style="width: 100%;"></div>
+            </div>
+            <h5 style="color:black"> <strong>正在加载...查询可融资金额概需花费2-5分钟，请稍等！</strong> </h5>
+        </div>
+    </div>
 </div>
 <!-- Javascript Libs -->
 <script type="text/javascript" src="dist/lib/js/jquery.min.js"></script>
@@ -376,17 +384,22 @@
             return
         }
         var url = '/xiaomi_crawl?game_code=' + gameCode + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
-        $("#craw_btn").attr("disabled", true);
         $.ajax({
             url: url,
             type: 'get',
             data: {},
+            beforeSend:function (){
+                $("#craw_btn").attr("disabled", true);
+                $("#loadingModal").modal('show');
+            },
             success: function (data) {
                 $("#craw_btn").removeAttr("disabled");
+                $('#loadingModal').modal('hide');
                 alert("爬取成功");
             },
             error: function (jqXHR) {
                 $("#craw_btn").removeAttr("disabled");
+                $('#loadingModal').modal('hide');
                 aler("请求失败：" + jqXHR.status);
             }
         })
