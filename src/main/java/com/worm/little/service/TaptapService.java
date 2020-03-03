@@ -69,6 +69,8 @@ public class TaptapService {
         List<String> titles = Lists.newArrayList();
         titles.add("序号");
         titles.add("名称");
+        titles.add("评分");
+        titles.add("预约量");
         titles.add("厂商");
         titles.add("开发商");
         titles.add("发行商");
@@ -96,6 +98,8 @@ public class TaptapService {
                 j++;
                 seqNo++;
                 String title = "";
+                String score = "";
+                String yuyueCount = "";
                 String companyName = "";
                 String developerName = "";
                 String publisherName = "";
@@ -111,7 +115,6 @@ public class TaptapService {
                 }
                 Elements urlElements = appElement.getElementsByClass("item-caption-title flex-text-overflow taptap-link");
                 appUrl = CollectionUtils.isEmpty(urlElements) ? null : urlElements.get(0).attr("href");
-                System.out.println("app_url = " + appUrl + " seqNo =" + seqNo);
                 if (StringUtils.isEmpty(appUrl)) {
                     continue;
                 }
@@ -119,6 +122,22 @@ public class TaptapService {
                     Document appDocument = Jsoup.connect(appUrl).get();
                     if (Objects.isNull(appDocument)) {
                         continue;
+                    }
+                    Elements scoreElements = appDocument.getElementsByClass("app-rating-score");
+                    if (!CollectionUtils.isEmpty(scoreElements)) {
+                        score = scoreElements.get(0).text();
+                        if (StringUtils.isEmpty(score)) {
+                            score = "";
+                        }
+                    }
+                    Elements countElements = appDocument.getElementsByClass("count-stats");
+                    if (!CollectionUtils.isEmpty(countElements)) {
+                        yuyueCount = countElements.get(0).text();
+                        if (StringUtils.isNotEmpty(yuyueCount)) {
+                            yuyueCount = yuyueCount.replace("人预约", "");
+                        } else {
+                            yuyueCount = "";
+                        }
                     }
                     Elements companyElements = appDocument.getElementsByClass("header-text-author");
                     if (CollectionUtils.isEmpty(companyElements)) {
@@ -149,6 +168,8 @@ public class TaptapService {
                 }
                 valueList.add(String.valueOf(seqNo));//序号
                 valueList.add(title);// 标题
+                valueList.add(score);// 评分
+                valueList.add(yuyueCount);// 预约量
                 valueList.add(companyName);// 公司
                 valueList.add(developerName);// 开放商
                 valueList.add(publisherName);// 发行商
@@ -178,6 +199,8 @@ public class TaptapService {
 
     public static void main(String[] args) throws Exception {
         TaptapService taptapService = new TaptapService();
+        taptapService.exportSubscribe(new HashMap<>());
+
         String companyNameTag = "厂商";
         String developerNameTag = "开发商";
         String publisherNameTag = "发行商";
