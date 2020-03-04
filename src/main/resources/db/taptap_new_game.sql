@@ -14,7 +14,6 @@
  Date: 05/03/2020 00:21:13
 */
 
-SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
@@ -24,18 +23,18 @@ DROP TABLE IF EXISTS `taptap_new_game`;
 CREATE TABLE `taptap_new_game`  (
   `id` bigint(0) NOT NULL COMMENT '主键',
   `sort` int(0) NOT NULL COMMENT '序号',
-  `game_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '游戏id',
-  `game_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '名称',
-  `score` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '评分',
+  `game_code` varchar(10) CHARACTER SET utf8mb4  NOT NULL COMMENT '游戏id',
+  `game_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL COMMENT '名称',
+  `score` varchar(10) CHARACTER SET utf8mb4  NULL DEFAULT NULL COMMENT '评分',
   `count` int(0) NULL DEFAULT NULL COMMENT '预约量',
-  `company_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '厂商',
-  `developer_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '开发商',
-  `publisher_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '发行商',
-  `url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '落地页',
+  `company_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL COMMENT '厂商',
+  `developer_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL COMMENT '开发商',
+  `publisher_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL COMMENT '发行商',
+  `url` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL COMMENT '落地页',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_taptap_new_game`(`game_code`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'taptap预约新游表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COMMENT = 'taptap预约新游表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of taptap_new_game
