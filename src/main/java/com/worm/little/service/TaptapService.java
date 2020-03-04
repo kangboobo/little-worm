@@ -126,7 +126,7 @@ public class TaptapService {
         if (!CollectionUtils.isEmpty(taptapNewGames)) {
             for (TaptapNewGame taptapNewGame : taptapNewGames) {
                 List<String> valueList = new ArrayList<>();
-                valueList.add(String.valueOf(seqNo));//序号
+                valueList.add(String.valueOf(seqNo++));//序号
                 valueList.add(Objects.isNull(taptapNewGame.getGameName()) ? "" : taptapNewGame.getGameName());// 标题
                 valueList.add(Objects.isNull(taptapNewGame.getScore()) ? "" : taptapNewGame.getScore());// 评分
                 valueList.add(Objects.isNull(taptapNewGame.getCount()) ? "" : taptapNewGame.getCount().toString());// 预约量
@@ -191,7 +191,6 @@ public class TaptapService {
                 if (StringUtils.isEmpty(title)) {
                     continue;
                 }
-                logger.info("sort={}, title={}", sort, title);
                 Elements urlElements = appElement.getElementsByClass("item-caption-title flex-text-overflow taptap-link");
                 appUrl = CollectionUtils.isEmpty(urlElements) ? null : urlElements.get(0).attr("href");
                 if (StringUtils.isEmpty(appUrl)) {
