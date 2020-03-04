@@ -38,7 +38,7 @@
                         <i class="fa fa-bars icon"></i>
                     </button>
                     <ol class="breadcrumb navbar-breadcrumb">
-                        <li class="active">小米游戏评论</li>
+                        <li class="active">TapTap预约新游</li>
                     </ol>
                     <button type="button" class="navbar-right-expand-toggle pull-right visible-xs">
                         <i class="fa fa-th icon"></i>
@@ -105,7 +105,7 @@
                         </li>
                         <li>
                             <a href="/taptap_game">
-                                <span class="iconfont icon-xiaomi"></span><span class="title">&nbsp;&nbsp;TapTap</span>
+                                <span class="iconfont icon-xiaomi"></span><span class="title">&nbsp;&nbsp;TapTap新游</span>
                             </a>
                         </li>
                     </ul>
@@ -124,12 +124,44 @@
                                     <form id="craw_form">
                                         <div class="form-inline">
                                             <div class="form-group">
-                                                <button type="button" id="export_btn" class="btn btn-warning">&nbsp;&nbsp;导出预约新游&nbsp;&nbsp;</button>
+                                                <input type="text" class="form-control" name="keyword" id="keyword"
+                                                       placeholder="输入游戏名称搜索">
+                                                <button type="button" id="search_comment" class="btn btn-info">&nbsp;&nbsp;搜索&nbsp;&nbsp;
+                                                </button>
+                                                <button type="button" id="export_btn" class="btn btn-warning">&nbsp;&nbsp;导出&nbsp;&nbsp;</button>
                                                 <a id="download" href="" name=""></a>
                                             </div>
                                             <h5 class="page-header"></h5>
                                         </div>
                                     </form>
+                                </div>
+                                <div id="table_refresh">
+                                    <table class="table table-striped table-bordered table-hover"
+                                           style='table-layout:fixed;'>
+                                        <thead>
+                                        <tr>
+                                            <th style='width:4%;'>序号</th>
+                                            <th style='width:4%;'>游戏ID</th>
+                                            <th style='width:15%;'>游戏名称</th>
+                                            <th style='width:4%;'>评分</th>
+                                            <th style='width:6%;'>预约量</th>
+                                            <th style='width:12%;'>厂商</th>
+                                            <th style='width:12%;'>开发商</th>
+                                            <th style='width:12%;'>发行商</th>
+                                            <th style='width:17%;'>落地页</th>
+                                            <th style='width:13%;'>爬取时间</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="table_body">
+                                        <!-- 表格内容由ajax请求结果动态填充-->
+                                        </tbody>
+                                    </table>
+                                    <div style="display:inline-block;" id="pageInfoTxt">
+                                    </div>
+                                </div>
+                                <!-- 分页容器： 显示分页按钮-->
+                                <div id="Paginator" style="text-align: center">
+                                    <ul id="pageLimit"></ul>
                                 </div>
                             </div>
                         </div>
@@ -173,6 +205,83 @@
     $(function() {
         getPage(1);
     })
+
+    // 搜索按钮事件
+    $('#search_comment').click(function () {
+            getPage(1);
+        }
+    )
+    // 分页查询方法
+    function getPage(pageNum) {
+        var keyword = $("#keyword").val();// 关键词
+        var pageSize = 20;
+        $.ajax({
+            url: "/taptap_subscribe_list",
+            type: "GET",
+            data: {
+                "keyword": keyword,
+                "page_num": pageNum,
+                "page_size": pageSize,
+            },
+            dataType: "json",
+            success: function (result) {
+                // 清空页面
+                $('#table_body').html("");
+                $("#pageInfoTxt").html("");
+                var totalPages = 10; // 总页数
+                var totalCount = result.size; // 总数据量
+                var data = result.data; // 分页数据
+                var dataJson = eval(data);// 数据转化为json
+                if (data.list != null) {
+                    totalPages = dataJson.pages;
+                    // 动态填充页面数据
+                    var table_body_html = "";
+                    $.each(dataJson.list, function (i, item) {
+                        table_body_html += '<tr>';
+                        table_body_html += '<td>' + item.sort + '</td>';
+                        table_body_html += '<td>' + item.gameCode + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.gameName + '</td>';
+                        table_body_html += '<td>' + item.score + '</td>';
+                        table_body_html += '<td>' + item.countStr + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.companyName + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.developerName + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.publisherName + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.url + '</td>';
+                        table_body_html += '<td>' + item.createTimeStr + '</td>';
+                        table_body_html += '</tr>';
+                    });
+                    $('#table_body').html(table_body_html);
+                    $("#pageInfoTxt").append('<span>' + totalCount+ '条数据 共' + totalPages + '页 </span>');
+                    var options = {
+                        bootstrapMajorVersion: 3, //版本
+                        size: "normal",
+                        currentPage: pageNum, //当前页数
+                        totalPages: totalPages, //总页数
+                        numberOfPages: 10,
+                        itemTexts: function (type, page, current) {
+                            switch (type) {
+                                case "first":
+                                    return "首页";
+                                case "prev":
+                                    return "上一页";
+                                case "next":
+                                    return "下一页";
+                                case "last":
+                                    return "末页";
+                                case "page":
+                                    return page;
+                            }
+                        },
+                        // 点击事件，用于通过Ajax来刷新整个list列表
+                        onPageClicked: function (event, originalEvent, type, page) {
+                            getPage(page);
+                        }
+                    };
+                    $('#pageLimit').bootstrapPaginator(options);
+                }
+            }
+        });
+    };
 
     // 导出按钮事件
     $('#export_btn').click(function () {

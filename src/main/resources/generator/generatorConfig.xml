@@ -6,7 +6,7 @@
 
 <generatorConfiguration>
     <!--指定特定数据库的jdbc驱动jar包的位置-->
-    <classPathEntry location="C:\Users\kklovexx\.m2\repository\mysql\mysql-connector-java\8.0.16\mysql-connector-java-8.0.16.jar"/>
+    <classPathEntry location="D:\work\repo\mysql\mysql-connector-java\8.0.16\mysql-connector-java-8.0.16.jar"/>
 
     <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
 
@@ -18,7 +18,7 @@
 
         <!--jdbc的数据库连接 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://127.0.0.1:3306/little_worm?useSSL=false&amp;useUnicode=true&amp;acharacterEncoding=utf8mb4"
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/little_worm?serverTimezone=GMT%2B8&amp;useSSL=false&amp;useUnicode=true&amp;acharacterEncoding=utf8mb4"
                         userId="root"
                         password="root123">
         </jdbcConnection>
@@ -63,7 +63,7 @@
         </javaClientGenerator>
 
 
-        <table tableName="`user_crawl_record`">
+        <table tableName="taptap_new_game">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 
