@@ -105,9 +105,10 @@ public class TaptapService {
     public File exportSubscribeGame(Map<String, Object> param) throws Exception {
         logger.info("taptap预约新游导出");
         // 查询存储的最新游戏
-        TaptapNewGame lastGame = taptapNewGameMapper.getLastGame(param);
+        // TaptapNewGame lastGame = taptapNewGameMapper.getLastGame(param);
+        List<TaptapNewGame> lastTaptapNewGames = taptapNewGameMapper.selectAll();
         // 爬取预约新游
-        this.crawTaptapNewGame(lastGame);
+        this.crawTaptapNewGame(Objects.nonNull(lastTaptapNewGames) ? lastTaptapNewGames.get(0) : null);
         // 查询所有预约新游
         List<TaptapNewGame> taptapNewGames = taptapNewGameMapper.selectAll();
         // 组织标题

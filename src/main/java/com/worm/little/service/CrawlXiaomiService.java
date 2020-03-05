@@ -76,14 +76,14 @@ public class CrawlXiaomiService {
         List<CrawlCommentXiaomi> crawlCommentXiaomis = crawlCommentXiaomiMapper.getCommentList(param);
         PageInfo pageInfo = new PageInfo(crawlCommentXiaomis);
         List<CrawlCommentXiaomi> list = pageInfo.getList();
-        if(CollectionUtils.isEmpty(list)){
+        if (CollectionUtils.isEmpty(list)) {
             return result;
         }
 
         // 查询游戏信息
         List<UserCrawlRecord> userCrawlRecords = userCrawlRecordMapper.selectGameInfoByCode(list.get(0).getGameCode());
         String gameName = null;
-        if(!CollectionUtils.isEmpty(userCrawlRecords)){
+        if (!CollectionUtils.isEmpty(userCrawlRecords)) {
             gameName = userCrawlRecords.get(0).getGameName();
         }
 
@@ -236,10 +236,10 @@ public class CrawlXiaomiService {
             // 解析HTML
             Document doc = Jsoup.parse(gameResponseHtml);
             Elements elements = doc.select("div[class=detail-info]").select("h1[class=game-name]");
-            if(elements != null){
+            if (elements != null) {
                 gameName = elements.get(0).text();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error("小米游戏中心爬取异常， 根据游戏code查询游戏信息失败，gameCode={}", gameCode, e);
         }
         return gameName;
@@ -296,14 +296,14 @@ public class CrawlXiaomiService {
                         // 更新时间晚于截至时间的跳过
                         if (!StringUtils.isEmpty(endDate)) {
                             Date endTime = sdf.parse(endDate);
-                            if (updateTime.after(endTime)) {
+                            if (createTime.after(endTime)) {
                                 continue;
                             }
                         }
                         // 更新时间早于开始时间时爬取结束
                         if (!StringUtils.isEmpty(startDate)) {
                             Date startTime = sdf.parse(startDate);
-                            if (updateTime.before(startTime)) {
+                            if (createTime.before(startTime)) {
                                 isBreak = true;
                                 break;
                             }
