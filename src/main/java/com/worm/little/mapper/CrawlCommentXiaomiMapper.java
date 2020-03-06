@@ -1,6 +1,7 @@
 package com.worm.little.mapper;
 
 import com.worm.little.entity.CrawlCommentXiaomi;
+import com.worm.little.vo.CrawlCommentXiaomiVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -32,7 +33,7 @@ public interface CrawlCommentXiaomiMapper {
      * @param param
      * @return
      */
-    List<CrawlCommentXiaomi> getCommentList(Map param);
+    List<CrawlCommentXiaomiVo> getCommentList(Map param);
 
     /**
      * 获取评论条数

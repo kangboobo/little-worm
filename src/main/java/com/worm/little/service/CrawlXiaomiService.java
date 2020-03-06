@@ -73,9 +73,9 @@ public class CrawlXiaomiService {
         Map<String, Object> result = new HashMap<>();
         // 分页查询
         PageHelper.startPage(pageNum, pageSize);
-        List<CrawlCommentXiaomi> crawlCommentXiaomis = crawlCommentXiaomiMapper.getCommentList(param);
+        List<CrawlCommentXiaomiVo> crawlCommentXiaomis = this.crawlCommentXiaomiMapper.getCommentList(param);
         PageInfo pageInfo = new PageInfo(crawlCommentXiaomis);
-        List<CrawlCommentXiaomi> list = pageInfo.getList();
+        List<CrawlCommentXiaomiVo> list = pageInfo.getList();
         if (CollectionUtils.isEmpty(list)) {
             return result;
         }
@@ -87,18 +87,13 @@ public class CrawlXiaomiService {
             gameName = userCrawlRecords.get(0).getGameName();
         }
 
-        List<CrawlCommentXiaomiVo> resultList = new ArrayList<>(pageSize);
         for (int i = 0; i < list.size(); i++) {
-            CrawlCommentXiaomi crawlCommentXiaomi = list.get(i);
-            crawlCommentXiaomi.setSort(i + 1 + pageSize * (pageNum - 1));
-            CrawlCommentXiaomiVo vo = new CrawlCommentXiaomiVo();
-            BeanUtils.copyProperties(crawlCommentXiaomi, vo);
-            vo.setCreateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
-            vo.setUpdateTimeStr(DateFormatUtils.format(crawlCommentXiaomi.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
-            vo.setGameName(gameName);
-            resultList.add(vo);
+            CrawlCommentXiaomiVo crawlCommentXiaomiVo = list.get(i);
+            crawlCommentXiaomiVo.setSort(i + 1 + pageSize * (pageNum - 1));
+            crawlCommentXiaomiVo.setCreateTimeStr(DateFormatUtils.format(crawlCommentXiaomiVo.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+            crawlCommentXiaomiVo.setUpdateTimeStr(DateFormatUtils.format(crawlCommentXiaomiVo.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
+            crawlCommentXiaomiVo.setGameName(gameName);
         }
-        pageInfo.setList(resultList);
         result.put("size", crawlCommentXiaomiMapper.getCommentListCount(param));
         result.put("data", pageInfo);
         return result;
@@ -114,13 +109,18 @@ public class CrawlXiaomiService {
     public File exportComment(Map<String, Object> param) throws Exception {
         logger.info("小米游戏中心评论数据导出， userId={}, gameCode={}", param.get("userId"), param.get("gameCode"));
         String gameCode = (String) param.get("gameCode");
-        List<CrawlCommentXiaomi> crawlCommentXiaomis = crawlCommentXiaomiMapper.getCommentList(param);
+        List<CrawlCommentXiaomiVo> crawlCommentXiaomis = crawlCommentXiaomiMapper.getCommentList(param);
         if (CollectionUtils.isEmpty(crawlCommentXiaomis)) {
             return null;
         }
         // 限制导出最大条数
         if (crawlCommentXiaomis.size() > Constans.EXPORT_COUNT_MAX_DEFAULT) {
             crawlCommentXiaomis = crawlCommentXiaomis.subList(0, Constans.EXPORT_COUNT_MAX_DEFAULT);
+        }
+        List<UserCrawlRecord> userCrawlRecords = this.userCrawlRecordMapper.selectGameInfoByCode((crawlCommentXiaomis.get(0)).getGameCode());
+        String gameName = null;
+        if (!CollectionUtils.isEmpty(userCrawlRecords)) {
+            gameName = ((UserCrawlRecord) userCrawlRecords.get(0)).getGameName();
         }
         // 组织导出数据
         List<String> titles = Lists.newArrayList();
@@ -138,7 +138,7 @@ public class CrawlXiaomiService {
         titles.add("更新时间");
         titles.add("游戏时长");
         for (int i = 0; i < crawlCommentXiaomis.size(); i++) {
-            CrawlCommentXiaomi crawlCommentXiaomi = crawlCommentXiaomis.get(i);
+            CrawlCommentXiaomiVo crawlCommentXiaomi = crawlCommentXiaomis.get(i);
             crawlCommentXiaomi.setSort(i + 1);
             List<String> valueList = new ArrayList<>(13);
             valueList.add(String.valueOf(crawlCommentXiaomi.getSort()));//序号
@@ -155,7 +155,7 @@ public class CrawlXiaomiService {
             valueList.add(crawlCommentXiaomi.getPlayDurationStr() == null ? "" : crawlCommentXiaomi.getPlayDurationStr());//游戏时长
             values.add(valueList);
         }
-        return ExcelUtils.exportDynamicExcelFile(titles, values, gameCode, "sheet1", filePath);
+        return ExcelUtils.exportDynamicExcelFile(titles, values, StringUtils.isEmpty(gameName) ? gameCode : gameName, "sheet1", filePath);
     }
 
     /**
@@ -199,7 +199,11 @@ public class CrawlXiaomiService {
             }
             // 根据游戏code查询游戏信息
             String gameName = this.getGameInfo(gameCode);
-
+            if (StringUtils.isNotEmpty(startDate) || StringUtils.isNotEmpty(endDate)) {
+                param.put("startDate", startDate);
+                param.put("endDate", endDate);
+                this.crawlCommentXiaomiMapper.deleteCommentByParam(param);
+            }
             // 循环爬取每页数据
             List<CrawlCommentXiaomi> crawlCommentXiaomis = new ArrayList<>();
             Integer totalCount = this.gameCommentCrawl(crawlCommentXiaomis, userId, gameCode, lastViewpointId, startDate, endDate);
@@ -293,14 +297,14 @@ public class CrawlXiaomiService {
                         Date createTime = viewpoint.getDate("createTime");
                         Date updateTime = viewpoint.getDate("updateTime");
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                        // 更新时间晚于截至时间的跳过
+                        // 发表时间晚于截至时间的跳过
                         if (!StringUtils.isEmpty(endDate)) {
                             Date endTime = sdf.parse(endDate);
                             if (createTime.after(endTime)) {
                                 continue;
                             }
                         }
-                        // 更新时间早于开始时间时爬取结束
+                        // 发表时间早于开始时间时爬取结束
                         if (!StringUtils.isEmpty(startDate)) {
                             Date startTime = sdf.parse(startDate);
                             if (createTime.before(startTime)) {
@@ -334,12 +338,19 @@ public class CrawlXiaomiService {
                         StringBuffer sb = new StringBuffer();
                         if (viewpoint.containsKey("topReplys")) {
                             JSONArray topReplys = viewpoint.getJSONArray("topReplys");
-                            if (topReplys != null) {
-                                for (int j = 0; j < (topReplys.size() > 2 ? 2 : topReplys.size()); j++) {
+                            if (topReplys != null && topReplys.size() > 0) {
+                                for (int j = 0; j < topReplys.size(); ++j) {
                                     JSONObject topReply = (JSONObject) topReplys.get(j);
                                     if (topReply.containsKey("content")) {
                                         if (j > 0) {
                                             sb.append(" || ");
+                                        }
+                                        JSONObject fromUser = topReply.getJSONObject("fromUser");
+                                        if (fromUser != null && fromUser.containsKey("nickname")) {
+                                            String fromUserName = fromUser.getString("nickname");
+                                            sb.append("[" + fromUserName + "]");
+                                        } else {
+                                            sb.append("[" + (j + 1) + "]");
                                         }
                                         sb.append(topReply.getString("content"));
                                     }
@@ -381,7 +392,7 @@ public class CrawlXiaomiService {
         params.append(url).append("?");
         params.append("uuid=0");
         params.append("&gameId=").append(gameCode);
-        params.append("&sortType=1"); // 按最新排序
+        params.append("&sortType=3"); // 按最新排序
         params.append("&page=").append(pageNum);
         params.append("&pageSize=").append(pageSize);
         params.append("&dataType=1");
@@ -438,24 +449,7 @@ public class CrawlXiaomiService {
                 }
             }
         }
-//        try {
-//            String title = "员工任务档案明细数据";
-//            // 标题
-//            List<String> titles = Lists.newArrayList();
-//            titles.add("序号");
-//            titles.add("姓名");
-//            titles.add("所属岗位");
-//            // 数据
-//            List<List<String>> values = new ArrayList<>();
-//            List<String> sheetValueList = new ArrayList<>();
-//            sheetValueList.add(String.valueOf(1));// 序号
-//            sheetValueList.add("张三");//姓名
-//            sheetValueList.add("岗位");//所属岗位
-//            values.add(sheetValueList);
-//            File file = ExcelUtils.exportDyExcelFile(titles,values, "导出文件","sheet1", "C:\\Users\\Administrator\\Downloads");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+
     }
 
 }

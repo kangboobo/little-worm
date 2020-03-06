@@ -142,6 +142,35 @@
                                                 </button>
                                                 <a id="download" href="" name=""></a>
                                             </div>
+                                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                                 aria-labelledby="exampleModalLabel">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content" align="center">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close"><span aria-hidden="true">×</span>
+                                                            </button>
+                                                            <h4 class="modal-title" id="exampleModalLabel">确认框</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form>
+                                                                <div class="form-group" align="center">
+                                                                    <label for="message-text" class="control-label">确定要清空数据？</label>
+                                                                    <span>(未输入游戏ID时会清空用户爬取的所有数据)</span>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer" align="center">
+                                                            <button type="button" class="btn btn-success"
+                                                                    data-dismiss="modal">取消
+                                                            </button>
+                                                            <button type="button" id="delete_btn" class="btn btn-danger"
+                                                                    data-dismiss="modal">确认
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <h5 class="page-header"></h5>
                                         </div>
                                     </form>
@@ -190,43 +219,6 @@
                 href="http://www.kangboobo.com/" target="_blank" title="kangkang">kangkang</a>
         </div>
     </footer>
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content" align="center">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"
-                            aria-label="Close"><span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title" id="exampleModalLabel">确认框</h4>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group" align="center">
-                            <label class="control-label">确定要清空数据？</label>
-                            <span>(未输入游戏ID时会清空用户爬取的所有数据)</span>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer" align="center">
-                    <button type="button" class="btn btn-success"
-                            data-dismiss="modal">取消
-                    </button>
-                    <button type="button" id="delete_btn" class="btn btn-danger"
-                            data-dismiss="modal">确认
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="loadingModal">
-        <div style="width: 200px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 50%;margin-left:-100px;margin-top:-10px">
-            <div class="progress progress-striped active" style="margin-bottom: 0;">
-                <div class="progress-bar" style="width: 100%;"></div>
-            </div>
-            <h5 style="color:black"> <strong>正在爬取...请稍等！</strong> </h5>
-        </div>
-    </div>
 </div>
 <!-- Javascript Libs -->
 <script type="text/javascript" src="dist/lib/js/jquery.min.js"></script>
@@ -252,12 +244,13 @@
 
 <script type="text/javascript">
     // 页面加载事件
-    $(function() {
+    $(function () {
         getPage(1);
     })
 
     // 日期选择器
     DatePicker("#start_date", "#end_date");
+
     function DatePicker(beginSelector, endSelector) {
         $(beginSelector).datetimepicker(
             {
@@ -265,9 +258,9 @@
                 autoclose: 1,
                 startView: 2,
                 minView: 0,
-                format: "yyyy-mm-dd hh:ii:ss",
+                format: "yyyy-mm-dd hh:ii",
                 clearBtn: true,
-                minuteStep:5
+                minuteStep: 5
             }).on('changeDate', function (ev) {
             if (ev.date) {
                 $(endSelector).datetimepicker('setStartDate', new Date(ev.date.valueOf()))
@@ -281,9 +274,9 @@
                 autoclose: 1,
                 startView: 2,
                 minView: 0,
-                format: "yyyy-mm-dd hh:ii:ss",
+                format: "yyyy-mm-dd hh:ii",
                 clearBtn: true,
-                minuteStep:5
+                minuteStep: 5
             }).on('changeDate', function (ev) {
             if (ev.date) {
                 $(beginSelector).datetimepicker('setEndDate', new Date(ev.date.valueOf()))
@@ -335,21 +328,21 @@
                         table_body_html += '<tr>';
                         table_body_html += '<td>' + item.sort + '</td>';
                         table_body_html += '<td>' + item.gameCode + '</td>';
-                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.gameName + '</td>';
-                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.nickname + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" title=' + item.gameName + '>' + item.gameName + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" title=' + item.nickname + '>' + item.nickname + '</td>';
                         table_body_html += '<td>' + item.sex + '</td>';
                         table_body_html += '<td>' + item.score + '</td>';
-                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.content + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" title=' + item.content + '>' + item.content + '</td>';
                         table_body_html += '<td>' + item.likeCount + '</td>';
                         table_body_html += '<td>' + item.replyCount + '</td>';
                         table_body_html += '<td>' + item.viewCount + '</td>';
-                        table_body_html += '<td>' + item.updateTimeStr + '</td>';
+                        table_body_html += '<td>' + item.createTimeStr + '</td>';
                         table_body_html += '<td>' + item.playDurationStr + '</td>';
-                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + item.topReply + '</td>';
+                        table_body_html += '<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" title=' + item.topReply + '>' + item.topReply + '</td>';
                         table_body_html += '</tr>';
                     });
                     $('#table_body').html(table_body_html);
-                    $("#pageInfoTxt").append('<span>' + totalCount+ '条数据 共' + totalPages + '页 </span>');
+                    $("#pageInfoTxt").append('<span>' + totalCount + '条数据 共' + totalPages + '页 </span>');
                     var options = {
                         bootstrapMajorVersion: 3, //版本
                         size: "normal",
@@ -389,22 +382,19 @@
             return
         }
         var url = '/xiaomi_crawl?game_code=' + gameCode + '&start_date=' + $("#start_date").val() + '&end_date=' + $("#end_date").val();
+        $("#craw_btn").attr("disabled", true);
         $.ajax({
             url: url,
             type: 'get',
             data: {},
-            beforeSend:function (){
-                $("#craw_btn").attr("disabled", true);
-                $("#loadingModal").modal('show');
-            },
             success: function (data) {
                 $("#craw_btn").removeAttr("disabled");
-                $('#loadingModal').modal('hide');
+                getPage(1);
                 alert("爬取成功");
             },
             error: function (jqXHR) {
                 $("#craw_btn").removeAttr("disabled");
-                $('#loadingModal').modal('hide');
+                getPage(1);
                 aler("请求失败：" + jqXHR.status);
             }
         })
@@ -442,9 +432,11 @@
             type: 'post',
             data: {},
             success: function (data) {
+                getPage(1);
                 alert("清空数据成功");
             },
             error: function (jqXHR) {
+                getPage(1);
                 alert("清空数据失败：" + jqXHR.status);
             }
         })
