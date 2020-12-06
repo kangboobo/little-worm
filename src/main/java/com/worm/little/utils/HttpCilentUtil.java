@@ -15,11 +15,9 @@ import java.io.IOException;
 /**
  * Created by kangboobo on 2019/8/20.
  */
-@Service
 public class HttpCilentUtil {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public String doGet(String url) {
+    public static String doGet(String url) {
         String responseContent = null;
         // 创建http客户端
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -32,14 +30,15 @@ public class HttpCilentUtil {
             response = httpClient.execute(httpGet);
             // 从响应模型中获取响应实体
             HttpEntity responseEntity = response.getEntity();
-            logger.info("http请求响应状态为:" + response.getStatusLine());
+            System.out.println("http请求响应状态为:" + response.getStatusLine());
             if (responseEntity != null) {
                 responseContent = EntityUtils.toString(responseEntity);
-                logger.info("http请求响应内容长度为:" + responseEntity.getContentLength());
+                System.out.println("http请求响应内容长度为:" + responseEntity.getContentLength());
                 // logger.info("http请求响应内容为:" + responseContent);
             }
         } catch (Exception e) {
-            logger.error("http请求失败 !!! url={}", url, e);
+            System.out.println("http请求失败 !!! url=" + url);
+            e.printStackTrace();
         } finally {
             try {
                 // 释放资源
@@ -50,10 +49,10 @@ public class HttpCilentUtil {
                     response.close();
                 }
             } catch (IOException e) {
-                logger.error("HttpCilentUtil 释放资源失败 !!! ", e);
+                System.out.println("HttpCilentUtil 释放资源失败 !!! ");
+                e.printStackTrace();
             }
         }
-
         return responseContent;
     }
 }

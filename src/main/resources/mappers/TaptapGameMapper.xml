@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.worm.little.mapper.TaptapGameMapper" >
+  <resultMap id="BaseResultMap" type="com.worm.little.entity.TaptapGame" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="game_code" property="gameCode" jdbcType="VARCHAR" />
+    <result column="game_name" property="gameName" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="VARCHAR" />
+    <result column="tags" property="tags" jdbcType="VARCHAR" />
+    <result column="count" property="count" jdbcType="VARCHAR" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from taptap_game
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.worm.little.entity.TaptapNewGame" >
+    insert into taptap_game (
+      id, game_code, game_name,
+      score, tags, count, company_name,
+      url,create_time
+      )
+    values (
+      #{id,jdbcType=BIGINT},  #{gameCode,jdbcType=VARCHAR}, #{gameName,jdbcType=VARCHAR},
+      #{score,jdbcType=VARCHAR}, #{tags,jdbcType=VARCHAR}, #{count,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
+      #{url,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.worm.little.entity.TaptapNewGame" >
+    update taptap_game
+    set game_code = #{gameCode,jdbcType=VARCHAR},
+      game_name = #{gameName,jdbcType=VARCHAR},
+      score = #{score,jdbcType=VARCHAR},
+      tags = #{tags,jdbcType=VARCHAR},
+      count = #{count,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, game_code, game_name, score, tags, count, company_name, url, create_time
+    from taptap_game
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, game_code, game_name, score, tags, count, company_name, url, create_time
+    from taptap_game order by create_time desc, id asc
+  </select>
+  <!--批量新增-->
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into taptap_game (
+    id, game_code, game_name,
+    score, tags, count, company_name,
+    url,create_time
+    ) values
+    <foreach collection="list" item="it" separator=",">
+      (
+      #{it.id,jdbcType=BIGINT}, #{it.gameCode,jdbcType=VARCHAR}, #{it.gameName,jdbcType=VARCHAR},
+      #{it.score,jdbcType=VARCHAR}, #{it.tags,jdbcType=VARCHAR}, #{it.count,jdbcType=VARCHAR}, #{it.companyName,jdbcType=VARCHAR},
+      #{it.url,jdbcType=VARCHAR}, #{it.createTime,jdbcType=TIMESTAMP}
+      )
+    </foreach>
+  </insert>
+  <!--获取存储的最新游戏-->
+  <select id="getLastGame" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select *
+    from
+	(
+		select *
+		from taptap_game
+        where tags =  #{tags,jdbcType=VARCHAR}
+		order by create_time desc, id asc
+	) as t
+    limit 1
+    </select>
+  <!--获取游戏-->
+  <select id="getGameList" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select id, game_code, game_name, score, tags, count, company_name, url, create_time
+    from taptap_game
+    where 1=1
+    <if test="keyword != null and keyword != ''">
+      and game_name like CONCAT('%',#{keyword, jdbcType=VARCHAR},'%')
+    </if>
+    order by create_time desc, id asc
+  </select>
+</mapper>

@@ -51,9 +51,6 @@ public class CrawlXiaomiService {
     private IdWorker idWorker;
 
     @Autowired
-    private HttpCilentUtil httpCilentUtil;
-
-    @Autowired
     private CrawlCommentXiaomiMapper crawlCommentXiaomiMapper;
 
     @Autowired
@@ -236,7 +233,7 @@ public class CrawlXiaomiService {
         String gameName = null;
         try {
             String url = INFO_URL + gameCode;
-            String gameResponseHtml = httpCilentUtil.doGet(url);
+            String gameResponseHtml = HttpCilentUtil.doGet(url);
             // 解析HTML
             Document doc = Jsoup.parse(gameResponseHtml);
             Elements elements = doc.select("div[class=detail-info]").select("h1[class=game-name]");
@@ -266,7 +263,7 @@ public class CrawlXiaomiService {
                 break;
             }
             String url = this.getHttpRequestParams(URL, pageNum, PAGE_SIZE, gameCode);
-            String pageResponseContent = httpCilentUtil.doGet(url);
+            String pageResponseContent = HttpCilentUtil.doGet(url);
             JSONObject pageJson = JSONObject.parseObject(pageResponseContent);// 解析响应json
             // 第一页时获取总评论数，并计算总页数
             if (pageNum == 1) {
@@ -421,7 +418,7 @@ public class CrawlXiaomiService {
             params.append("&relObjId=").append(gameCode);
             params.append("&relObjType=1");
             params.append("&owner=1");
-            String pageResponseContent = httpCilentUtil.doGet(params.toString());
+            String pageResponseContent = HttpCilentUtil.doGet(params.toString());
             JSONObject pageJson = JSONObject.parseObject(pageResponseContent);
             if (pageNum == 1) {
                 Integer totalRecordCnt = pageJson.getInteger("totalRecordCnt");// 评论条数

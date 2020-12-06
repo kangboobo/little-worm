@@ -109,4 +109,45 @@ public class TapTapController {
         model.addAttribute("msg", "导出文件成功");
         return null;
     }
+
+    /**
+     * 导出taptap全部游戏
+     *
+     * @param response
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/taptap_game_export", method = RequestMethod.GET)
+    public Object exportAllGame(Model model,
+                                @RequestParam(value = "tag", required = false) String tag,
+                                HttpServletResponse response,
+                                HttpServletRequest request) {
+        Long userId = (Long) request.getSession().getAttribute("userId");// 从该用户的session中获取用户id
+        Map<String, Object> param = new HashMap<>();
+        param.put("userId", userId);
+        param.put("tag", tag);
+        try {
+            File file = taptapService.exportAllGame(param);
+            if (file == null) {
+                model.addAttribute("code", 1);
+                model.addAttribute("msg", "导出数据为空");
+                return null;
+            }
+            // 下载文件到客户端
+            exportExcelUtil.exportExcelFromLocal(request, response, file);
+            // 下载完毕后删除服务端文件
+            if (file.exists()) {
+                file.getAbsoluteFile().delete();
+            }
+        } catch (Exception e) {
+            logger.error("/taptap_game_export error", e);
+            model.addAttribute("code", 2);
+            model.addAttribute("msg", "导出文件失败");
+            return null;
+        }
+
+        model.addAttribute("code", 0);
+        model.addAttribute("msg", "导出文件成功");
+        return null;
+    }
 }
