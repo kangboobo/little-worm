@@ -438,13 +438,17 @@ public class TaptapService {
      */
     public File exportAllGame(Map<String, Object> param) throws Exception {
         logger.info("taptap全部游戏导出");
-                                                    String userTag = (String) param.get("tag");
+        String userTag = (String) param.get("tag");
         if (!StringUtils.isEmpty(userTag) && !TYPE_LIST.contains(userTag)) {
             return null;
         }
         // 爬取全部游戏
         if (StringUtils.isEmpty(userTag)) {
-            for (String tag : TYPE_LIST) {
+            List<String> typeList = this.getTapGameType();
+            if (CollectionUtils.isEmpty(typeList)) {
+                typeList = TYPE_LIST;
+            }
+            for (String tag : typeList) {
                 this.crawTaptapAllGame(tag);
             }
         } else {
@@ -452,31 +456,44 @@ public class TaptapService {
         }
         // 查询所有全部游戏
         List<TaptapGame> taptapGames = taptapGameMapper.selectAll();
-        // Map<String, List<TaptapGame>> taptapGameMap = taptapGames.stream().collect(Collectors.groupingBy(TaptapGame::getGameCode));
+        Map<String, List<TaptapGame>> taptapGameMap = taptapGames.stream().collect(Collectors.groupingBy(TaptapGame::getGameCode));
         // 组织标题
         List<String> titles = Lists.newArrayList();
         titles.add("序号");
         titles.add("名称");
         titles.add("评分");
-        titles.add("安装/购买/预约/关注量");
+        titles.add("安装量");
+        titles.add("购买量");
+        titles.add("预约量");
+        titles.add("关注量");
         titles.add("类型");
         titles.add("厂商");
         titles.add("落地页");
         // 组织导出数据
         List<List<String>> values = Lists.newArrayList();
-        int seqNo = 0;
+        List<Integer> seqNo = Lists.newArrayList(0);
         if (!CollectionUtils.isEmpty(taptapGames)) {
-            for (TaptapGame taptapGame : taptapGames) {
+            taptapGameMap.forEach((k, v) -> {
                 List<String> valueList = new ArrayList<>();
-                valueList.add(String.valueOf(seqNo++));//序号
+                valueList.add(String.valueOf(seqNo.get(0)));//序号
+                TaptapGame taptapGame = v.get(0);
                 valueList.add(Objects.isNull(taptapGame.getGameName()) ? "" : taptapGame.getGameName());// 标题
                 valueList.add(Objects.isNull(taptapGame.getScore()) ? "" : taptapGame.getScore());// 评分
-                valueList.add(Objects.isNull(taptapGame.getCount()) ? "" : taptapGame.getCount());// 安装/购买/预约/关注量
-                valueList.add(Objects.isNull(taptapGame.getTags()) ? "" : taptapGame.getTags());// 类型
+                valueList.add(Objects.nonNull(taptapGame.getCount()) && taptapGame.getCount().contains("安装") ?
+                        taptapGame.getCount().replace("人安装", "") : "");// 安装量
+                valueList.add(Objects.nonNull(taptapGame.getCount()) && taptapGame.getCount().contains("购买") ?
+                        taptapGame.getCount().replace("人购买", "") : "");// 购买量
+                valueList.add(Objects.nonNull(taptapGame.getCount()) && taptapGame.getCount().contains("预约") ?
+                        taptapGame.getCount().replace("人预约", "") : "");// 预约量
+                valueList.add(Objects.nonNull(taptapGame.getCount()) && taptapGame.getCount().contains("关注") ?
+                        taptapGame.getCount().replace("人关注", "") : "");// 关注量
+                String tags = v.stream().filter(f -> StringUtils.isNotEmpty(f.getTags())).map(m -> m.getTags()).collect(Collectors.joining(","));
+                valueList.add(StringUtils.isEmpty(tags) ? "" : tags);// 类型
                 valueList.add(Objects.isNull(taptapGame.getCompanyName()) ? "" : taptapGame.getCompanyName());// 公司
                 valueList.add(Objects.isNull(taptapGame.getUrl()) ? "" : taptapGame.getUrl());// 链接
                 values.add(valueList);
-            }
+                seqNo.set(0, seqNo.get(0) + 1);
+            });
         }
         String fileName = "taptap全部游戏_" + DateUtils.formatDate(new Date(), "yyyyMMdd");
         return ExcelUtils.exportDynamicExcelFile(titles, values, fileName, "sheet1", filePath);

@@ -129,6 +129,7 @@
                                                 <button type="button" id="search_comment" class="btn btn-info">&nbsp;&nbsp;搜索&nbsp;&nbsp;
                                                 </button>
                                                 <button type="button" id="export_btn" class="btn btn-warning">&nbsp;&nbsp;导出&nbsp;&nbsp;</button>
+                                                <button type="button" id="export_all_btn" class="btn btn-success">&nbsp;&nbsp;导出全部游戏&nbsp;&nbsp;</button>
                                                 <a id="download" href="" name=""></a>
                                             </div>
                                             <h5 class="page-header"></h5>
@@ -291,6 +292,13 @@
         $("#download span").click();
     })
 
+    // 导出按钮事件
+    $('#export_all_btn').click(function () {
+        var hrefs = '/taptap_game_export';
+        $('#download').attr('href', hrefs);
+        $("#download").append("<span></span>");
+        $("#download span").click();
+    })
 </script>
 
 </html>

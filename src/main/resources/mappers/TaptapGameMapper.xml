@@ -62,6 +62,11 @@
       #{it.url,jdbcType=VARCHAR}, #{it.createTime,jdbcType=TIMESTAMP}
       )
     </foreach>
+    ON DUPLICATE KEY UPDATE
+    create_time=values(create_time),
+    count=values(count),
+    game_name=values(game_name),
+    url=values(url)
   </insert>
   <!--获取存储的最新游戏-->
   <select id="getLastGame" resultMap="BaseResultMap" parameterType="java.util.Map">
