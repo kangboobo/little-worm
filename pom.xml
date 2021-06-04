@@ -71,7 +71,7 @@
             <!-- jsoup HTML parser library @ https://jsoup.org/ -->
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5</version>
+            <version>4.5.13</version>
         </dependency>
         <!--fastjson json解析框架-->
         <dependency>
