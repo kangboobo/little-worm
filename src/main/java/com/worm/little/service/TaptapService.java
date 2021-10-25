@@ -53,6 +53,18 @@ public class TaptapService {
 
     private static final String URL = "https://www.taptap.com/category/e378";
 
+    /*private static final String LIST_URL = "https://www.taptap.com/webapiv2/app-list/v1/detail?_trackParams=%7B%22refererLogParams%22:%7B%7D%7D" +
+            "&X-UA=V=1%26PN=WebApp%26LANG=zh_CN%26VN_CODE=47%26VN=0.1.0%26LOC=CN%26PLT=PC%26DS=Android%26UID=79a0c7ef-289c-4a42-813a-f4975b28bc09%26DT=PC" +
+            "&id=378&limit=10&from=";*/
+
+    private static final String LIST_URL = "https://www.taptap.com/webapiv2/app-list/v1/detail?_trackParams=%7B%22refererLogParams%22:%7B%7D%7D&id=378&limit=10&from=";
+
+    private static final String DETAIL_URL = "https://www.taptap.com/webapiv2/app/v2/detail-by-id/%s?";
+
+    private static final String X_UA = "&X-UA=V=1%26PN=WebApp%26LANG=zh_CN%26VN_CODE=47%26VN=0.1.0%26LOC=CN%26PLT=PC%26DS=Android%26UID=79a0c7ef-289c-4a42-813a-f4975b28bc09%26DT=PC";
+
+    private static final String APP_URL = "https://www.taptap.com/app/%s";
+
     private static final Integer BATCH_COMMIT_SIZE = 100;
 
     private static final String GAME_TYPE_URL = "https://www.taptap.com/ajax/tag/hot-list/android?page=%s";
@@ -172,6 +184,98 @@ public class TaptapService {
      * @throws Exception
      */
     public void crawTaptapNewGame(TaptapNewGame lastGame) throws Exception {
+        logger.info("taptap预约新游爬取");
+        String lastGameCode = null;
+        Integer sort = 1;
+        if (Objects.nonNull(lastGame)) {
+            lastGameCode = lastGame.getGameCode();
+        }
+        List<TaptapNewGame> taptapNewGames = Lists.newArrayList();
+        String companyNameTag = "厂商";
+        String developerNameTag = "开发商";
+        String publisherNameTag = "发行商";
+        int pageNum = 1;
+        boolean hasNext = true;
+        Date now = new Date();
+        while (hasNext) {
+
+            String url = this.getHttpUrlParams(LIST_URL, pageNum);
+            url = url + X_UA;
+            String pageResponseContent = HttpCilentUtil.doGet(url);
+            JSONObject pageJson = JSONObject.parseObject(pageResponseContent);// 解析响应json
+            JSONObject data = pageJson.getJSONObject("data");
+            JSONArray array = data.getJSONArray("list");
+            if (CollectionUtils.isEmpty(array)) {
+                logger.info("taptap预约新游爬取结束, url:{}, array:{}", url, array);
+                hasNext = false;
+                break;
+            }
+            for (int i = 0; i < array.size(); i++) {
+                JSONObject jsonObject = array.getJSONObject(i);
+                String title = jsonObject.getString("title");
+                JSONObject stat = jsonObject.getJSONObject("stat");
+                String score = Objects.nonNull(stat) ? stat.getJSONObject("rating").getString("score") : "0.0";
+                String yuyueCount = Objects.nonNull(stat) ? stat.getString("reserve_count") : "0";
+                String gameCode = jsonObject.getString("id");
+                // 爬取到上次爬取的最后一个游戏时停止爬取
+                if (StringUtils.isNotEmpty(lastGameCode) && Objects.equals(lastGameCode, gameCode)) {
+                    logger.info("taptap预约新游爬取结束, lastGameCode:{}, gameCode:{}", lastGameCode, gameCode);
+                    hasNext = false;
+                    break;
+                }
+                String appUrl = String.format(APP_URL, gameCode);
+                String companyName = "";
+                String developerName = "";
+                String publisherName = "";
+                String detailUrl = String.format(DETAIL_URL, gameCode);
+                detailUrl = detailUrl + X_UA;
+                try {
+                    String detailContent = HttpCilentUtil.doGet(detailUrl);
+                    JSONObject detailJson = JSONObject.parseObject(detailContent);// 解析响应json
+                    JSONObject detailData = detailJson.getJSONObject("data");
+                    JSONArray companyArray = detailData.getJSONArray("developers");
+                    for (int j = 0; j < companyArray.size(); j++) {
+                        JSONObject company = companyArray.getJSONObject(j);
+                        companyName = "".equals(companyName) ? company.getString("name") :
+                                companyName + "," + company.getString("name");
+                    }
+                } catch (Exception e) {
+                    logger.error("taptap预约新游导出 error, detailUrl={}", detailUrl, e);
+                }
+                TaptapNewGame taptapNewGame = new TaptapNewGame();
+                taptapNewGame.setId(idWorker.nextId());
+                taptapNewGame.setSort(sort++);
+                taptapNewGame.setGameName(title);// 标题
+                taptapNewGame.setGameCode(gameCode);
+                taptapNewGame.setScore(score);// 评分
+                taptapNewGame.setCount(StringUtils.isNotEmpty(yuyueCount) ? Integer.parseInt(yuyueCount.trim()) : null);// 预约量
+                taptapNewGame.setCompanyName(companyName);// 公司
+                taptapNewGame.setDeveloperName(developerName);// 开放商
+                taptapNewGame.setPublisherName(publisherName);// 发行商
+                taptapNewGame.setUrl(appUrl);// 链接
+                taptapNewGame.setCreateTime(now);
+                taptapNewGames.add(taptapNewGame);
+            }
+            pageNum++;
+            // 爬取结果不为空时保存到数据库
+            if (!CollectionUtils.isEmpty(taptapNewGames)) {
+                // 分批保存数据
+                List<List<TaptapNewGame>> partition = com.google.common.collect.Lists.partition(taptapNewGames, BATCH_COMMIT_SIZE);
+                partition.forEach(p -> {
+                    taptapNewGameMapper.batchInsert(p);
+                });
+                taptapNewGames.clear();// 保存成功后清空list，避免内存泄漏
+            }
+        }
+    }
+
+    /**
+     * 爬取taptap预约新游
+     *
+     * @return
+     * @throws Exception
+     */
+    public void crawTaptapNewGameOld(TaptapNewGame lastGame) throws Exception {
         logger.info("taptap预约新游爬取");
         String lastGameCode = null;
         Integer sort = 1;
@@ -431,10 +535,10 @@ public class TaptapService {
     }
 
     /**
-     * @Title exportAllGame
-     * @Description 导出taptap全部游戏
      * @param
      * @return
+     * @Title exportAllGame
+     * @Description 导出taptap全部游戏
      */
     public File exportAllGame(Map<String, Object> param) throws Exception {
         logger.info("taptap全部游戏导出");
@@ -500,10 +604,10 @@ public class TaptapService {
     }
 
     /**
-     * @Title crawTaptapAllGame
-     * @Description 爬取taptap所有游戏
      * @param tag 游戏类型
      * @return void
+     * @Title crawTaptapAllGame
+     * @Description 爬取taptap所有游戏
      */
     public void crawTaptapAllGame(String tag) throws Exception {
         logger.info("taptap所有游戏爬取, tag:{}", tag);
@@ -640,9 +744,9 @@ public class TaptapService {
     }
 
     /**
+     * @return List<String>
      * @Title getTapGameType
      * @Description 获取taptap全部游戏类型
-     * @return List<String>
      */
     public List<String> getTapGameType() throws Exception {
         int pageNum = 1;
@@ -699,6 +803,19 @@ public class TaptapService {
         StringBuffer params = new StringBuffer();
         params.append(url).append("?");
         params.append("page=").append(pageNum);
+        return params.toString();
+    }
+
+    /**
+     * 组织HTTP请求参数
+     *
+     * @param url
+     * @param pageNum
+     * @return
+     */
+    private String getHttpUrlParams(String url, Integer pageNum) {
+        StringBuffer params = new StringBuffer();
+        params.append(url).append(10 * (pageNum - 1));
         return params.toString();
     }
 
